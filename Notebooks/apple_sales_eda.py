@@ -1,3 +1,4 @@
+
 # ---
 # jupyter:
 #   jupytext:
@@ -18,7 +19,7 @@ import pandas as pd
 import os
 
 # List CSVs in Data/
-data_path = '../Data'
+data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 csv_files = [f for f in os.listdir(data_path) if f.endswith('.csv')]
 print("Your Apple Sales CSVs:")
 for f in csv_files:
