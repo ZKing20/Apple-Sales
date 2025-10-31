@@ -1,5 +1,6 @@
 {
     "editor.formatOnSave": true,
     "python.linting.enabled": true,
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "jupytext.enabled": true
 }
