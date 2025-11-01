@@ -26,10 +26,10 @@ for f in csv_files:
     print(f"  - {f}")
 
 # Preview first CSV
-first_csv = csv_files[0] if csv_files else None
-if first_csv:
-    df = pd.read_csv(f'{data_path}/{first_csv}')
-    print(f"\n {first_csv} Preview:")
+category_csv = csv_files[0] if csv_files else None
+if category_csv:
+    df = pd.read_csv(f'{data_path}/{category_csv}')
+    print(f"\n {category_csv} Preview:")
     print("Shape:", df.shape)
     print("Columns:", df.columns.tolist())
     print(df.head())
