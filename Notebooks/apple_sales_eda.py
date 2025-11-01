@@ -25,7 +25,7 @@ print("Your Apple Sales CSVs:")
 for f in csv_files:
     print(f"  - {f}")
 
-# Preview first CSV (adjust name below if needed)
+# Preview first CSV
 first_csv = csv_files[0] if csv_files else None
 if first_csv:
     df = pd.read_csv(f'{data_path}/{first_csv}')
