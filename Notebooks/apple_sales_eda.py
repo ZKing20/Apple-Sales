@@ -34,6 +34,49 @@ if category_csv:
     print("Columns:", df.columns.tolist())
     print(df.head())
 else:
+    print("No category CSV found!")
+
+
+products_csv = csv_files[1] if csv_files else None
+if products_csv:
+    df = pd.read_csv(f'{data_path}/{products_csv}')
+    print(f"\n {products_csv} Preview:")
+    print("Shape:", df.shape)
+    print("Columns:", df.columns.tolist())
+    print(df.head())
+else:
+    print("No product CSV found!")
+
+sales_csv = csv_files[2] if csv_files else None
+if sales_csv:
+    df = pd.read_csv(f'{data_path}/{sales_csv}')
+    print(f"\n {sales_csv} Preview:")
+    print("Shape:", df.shape)
+    print("Columns:", df.columns.tolist())
+    print(df.head())
+else:
+    print("No Sales CSV found!")
+
+stores_csv = csv_files[3] if csv_files else None
+if stores_csv:
+    df = pd.read_csv(f'{data_path}/{stores_csv}')
+    print(f"\n {stores_csv} Preview:")
+    print("Shape:", df.shape)
+    print("Columns:", df.columns.tolist())
+    print(df.head())
+else:
     print("No CSVs found—add to Data/!")
+
+warranty_csv = csv_files[4] if csv_files else None
+if warranty_csv:
+    df = pd.read_csv(f'{data_path}/{warranty_csv}')
+    print(f"\n {warranty_csv} Preview:")
+    print("Shape:", df.shape)
+    print("Columns:", df.columns.tolist())
+    print(df.head())
+else:
+    print("No CSVs found—add to Data/!")
+
+
 
 # %%
