@@ -89,20 +89,71 @@ con.register('category', pd.read_csv(f'{data_path}/category.csv'))
 con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
 
 # SQL: Top Products
-top_products = con.execute("""
-SELECT 
-  p.Product_Name,
-  c.category_name,
-  SUM(s.quantity * p.Price) as Total_Revenue,
-  COUNT(*) as Units_Sold
-FROM sales s
-JOIN products p ON s.product_id = p.Product_ID
-JOIN category c ON p.Category_ID = c.category_id
-GROUP BY p.Product_Name, c.category_name
-ORDER BY Total_Revenue DESC
-LIMIT 10
-""").fetchdf()
+top_products_revenue = con.execute("""
+    SELECT 
+    p.Product_Name,
+    c.category_name,
+    SUM(s.quantity * p.Price) as Total_Revenue,
+    COUNT(*) as Units_Sold
+    FROM sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN category c ON p.Category_ID = c.category_id
+    GROUP BY p.Product_Name, c.category_name
+    ORDER BY Total_Revenue DESC
+    LIMIT 10
+    """).fetchdf()
 
 print("Top 10 Products by Revenue:")
-top_products
+top_products_revenue
+
 # %%
+top_products_units = con.execute("""
+    SELECT 
+    p.Product_Name,
+    c.category_name,
+    SUM(s.quantity * p.Price) as Total_Revenue,
+    SUM(s.quantity) as Units_Sold
+    FROM sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN category c ON p.Category_ID = c.category_id
+    GROUP BY p.Product_Name, c.category_name
+    ORDER BY Units_Sold DESC
+    LIMIT 10
+    """).fetchdf()
+
+print("Top 10 Products by Units Sold:")
+top_products_units
+# %%
+# SQL: Top Stores
+top_stores_revenue = con.execute("""
+    SELECT
+    st.Store_ID,
+    st.Store_Name,
+    st.City,
+    st.Country,
+    SUM(s.quantity * p.Price) as Total_Revenue
+    FROM stores st
+    JOIN sales s ON s.store_id = st.Store_ID
+    JOIN products p ON p.Product_ID = s.product_id
+    GROUP BY st.Store_ID, st.Store_Name, st.City, st.Country
+    ORDER BY Total_Revenue DESC
+    LIMIT 10
+    """).fetchdf()
+
+print("Top 10 Stores by Revenue:")
+top_stores_revenue
+# %%
+top_countries_revenue = con.execute("""
+    SELECT
+    st.Country,
+    SUM(s.quantity * p.Price) as Country_Revenue
+    FROM stores st
+    JOIN sales s ON s.store_id = st.Store_ID
+    JOIN products p ON p.Product_ID = s.product_id
+    GROUP BY st.Country
+    ORDER BY Country_Revenue DESC
+    LIMIT 10
+    """).fetchdf()
+
+print("Top 10 Countries by Revenue:")
+top_countries_revenue
