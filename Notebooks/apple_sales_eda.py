@@ -146,7 +146,16 @@ top_stores_revenue
 top_countries_revenue = con.execute("""
     SELECT
     st.Country,
-    SUM(s.quantity * p.Price) as Country_Revenue
+    SUM(s.quantity * p.Price) as Country_Revenue,
+    CAST(
+        (SELECT MAX(Country_Revenue) FROM (
+            SELECT SUM(s.quantity * p.Price) as Country_Revenue
+            FROM stores st
+            JOIN sales s ON s.store_id = st.Store_ID
+            JOIN products p ON p.Product_ID = s.product_id
+            GROUP BY st.Country         
+        ) as max_revenue) - SUM(s.quantity * p.Price)
+    AS INT) as Revenue_Difference
     FROM stores st
     JOIN sales s ON s.store_id = st.Store_ID
     JOIN products p ON p.Product_ID = s.product_id
