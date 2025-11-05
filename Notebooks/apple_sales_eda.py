@@ -22,6 +22,8 @@ import duckdb as db
 # List CSVs in Data
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 csv_files = [f for f in os.listdir(data_path) if f.endswith('.csv')]
+
+# %%
 print("Your Apple Sales CSVs:")
 if csv_files:    
     for f in csv_files:
@@ -90,6 +92,8 @@ con.register('sales', df_sales)
 con.register('products', pd.read_csv(f'{data_path}/products.csv'))
 con.register('category', pd.read_csv(f'{data_path}/category.csv'))
 con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
+
+# %%
 
 # SQL: Top Products
 top_products_revenue = con.execute("""
