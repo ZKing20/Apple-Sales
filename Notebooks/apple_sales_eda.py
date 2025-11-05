@@ -23,8 +23,11 @@ import duckdb as db
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 csv_files = [f for f in os.listdir(data_path) if f.endswith('.csv')]
 print("Your Apple Sales CSVs:")
-for f in csv_files:
-    print(f"  - {f}")
+if csv_files:    
+    for f in csv_files:
+        print(f"  - {f}")
+else:
+    print("No .csv files found")
 
 # Preview CSVs
 category_csv = csv_files[0] if csv_files else None
@@ -66,7 +69,7 @@ if stores_csv:
     print("Columns:", df_stores.columns.tolist())
     print(df_stores.head())
 else:
-    print("No CSVs found—add to Data/!")
+    print("No Stores CSV found!")
 
 warranty_csv = csv_files[4] if csv_files else None
 if warranty_csv:
@@ -76,7 +79,7 @@ if warranty_csv:
     print("Columns:", df_warranty.columns.tolist())
     print(df_warranty.head())
 else:
-    print("No CSVs found—add to Data/!")
+    print("No Warranty CSV found!")
 
 
 # %%
@@ -98,7 +101,7 @@ top_products_revenue = con.execute("""
     FROM sales s
     JOIN products p ON s.product_id = p.Product_ID
     JOIN category c ON p.Category_ID = c.category_id
-    GROUP BY p.Product_Name, c.category_name
+    GROUP BY p.Product_ID, c.category_id, p.Product_Name, c.category_name
     ORDER BY Total_Revenue DESC
     LIMIT 10
     """).fetchdf()
@@ -109,14 +112,14 @@ top_products_revenue
 # %%
 top_products_units = con.execute("""
     SELECT 
-    p.Product_Name,
-    c.category_name,
-    SUM(s.quantity * p.Price) as Total_Revenue,
-    SUM(s.quantity) as Units_Sold
+        p.Product_Name,
+        c.category_name,
+        SUM(s.quantity * p.Price) as Total_Revenue,
+        SUM(s.quantity) as Units_Sold
     FROM sales s
     JOIN products p ON s.product_id = p.Product_ID
     JOIN category c ON p.Category_ID = c.category_id
-    GROUP BY p.Product_Name, c.category_name
+    GROUP BY p.Product_ID, c.category_id, p.Product_Name, c.category_name
     ORDER BY Units_Sold DESC
     LIMIT 10
     """).fetchdf()
@@ -144,23 +147,32 @@ print("Top 10 Stores by Revenue:")
 top_stores_revenue
 # %%
 top_countries_revenue = con.execute("""
+    WITH Country_Revenue AS(
+        SELECT
+            st.Country,
+            SUM(s.quantity * p.Price) as Country_Revenue
+        FROM stores st
+        JOIN sales s ON s.store_id = st.Store_ID
+        JOIN products p ON p.Product_ID = s.product_id
+        GROUP BY st.Country
+    ),
+    Total_Revenue AS (
+        SELECT SUM(Country_Revenue) AS Total_Revenue
+        FROM Country_Revenue
+    ),
+    Max_Revenue AS (
+        SELECT MAX(Country_Revenue) AS Max_Revenue
+        FROM Country_Revenue
+    )                                 
     SELECT
-    st.Country,
-    SUM(s.quantity * p.Price) as Country_Revenue,
-    CAST(
-        (SELECT MAX(Country_Revenue) FROM (
-            SELECT SUM(s.quantity * p.Price) as Country_Revenue
-            FROM stores st
-            JOIN sales s ON s.store_id = st.Store_ID
-            JOIN products p ON p.Product_ID = s.product_id
-            GROUP BY st.Country         
-        ) as max_revenue) - SUM(s.quantity * p.Price)
-    AS INT) as Revenue_Difference
-    FROM stores st
-    JOIN sales s ON s.store_id = st.Store_ID
-    JOIN products p ON p.Product_ID = s.product_id
-    GROUP BY st.Country
-    ORDER BY Country_Revenue DESC
+        cr.Country,
+        cr.Country_Revenue,
+        CAST((cr.Country_Revenue * 100.0 / tr.Total_Revenue) AS DECIMAL(4,2)) AS Revenue_Percentage,
+        CAST(mr.Max_Revenue - cr.Country_Revenue AS INT) AS Revenue_Difference
+    FROM Country_Revenue cr
+    CROSS JOIN Total_Revenue tr
+    CROSS JOIN Max_Revenue mr
+    ORDER BY cr.Country_Revenue DESC
     LIMIT 10
     """).fetchdf()
 
