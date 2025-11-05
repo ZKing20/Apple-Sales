@@ -23,7 +23,6 @@ import duckdb as db
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 csv_files = [f for f in os.listdir(data_path) if f.endswith('.csv')]
 
-# %%
 print("Your Apple Sales CSVs:")
 if csv_files:    
     for f in csv_files:
@@ -31,6 +30,7 @@ if csv_files:
 else:
     print("No .csv files found")
 
+#%%
 # Preview CSVs
 category_csv = csv_files[0] if csv_files else None
 if category_csv:
