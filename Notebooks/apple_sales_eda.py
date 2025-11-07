@@ -92,10 +92,11 @@ con.register('sales', df_sales)
 con.register('products', pd.read_csv(f'{data_path}/products.csv'))
 con.register('category', pd.read_csv(f'{data_path}/category.csv'))
 con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
+con.register('warranty', pd.read_csv(f'{data_path}/warranty.csv'))
 
 # %%
 
-# SQL: Top Products
+# SQL: Top/Bottom Products
 top_products_revenue = con.execute("""
     SELECT 
     p.Product_Name,
@@ -114,6 +115,23 @@ print("Top 10 Products by Revenue:")
 top_products_revenue
 
 # %%
+bottom_products_revenue = con.execute("""
+    SELECT 
+    p.Product_Name,
+    c.category_name,
+    SUM(s.quantity * p.Price) as Total_Revenue,
+    COUNT(*) as Units_Sold
+    FROM sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN category c ON p.Category_ID = c.category_id
+    GROUP BY p.Product_ID, c.category_id, p.Product_Name, c.category_name
+    ORDER BY Total_Revenue ASC
+    LIMIT 10
+    """).fetchdf()
+
+print("Bottom 10 Products by Revenue:")
+bottom_products_revenue
+# %%
 top_products_units = con.execute("""
     SELECT 
         p.Product_Name,
@@ -130,8 +148,26 @@ top_products_units = con.execute("""
 
 print("Top 10 Products by Units Sold:")
 top_products_units
+
 # %%
-# SQL: Top Stores
+bottom_products_units = con.execute("""
+    SELECT 
+        p.Product_Name,
+        c.category_name,
+        SUM(s.quantity * p.Price) as Total_Revenue,
+        SUM(s.quantity) as Units_Sold
+    FROM sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN category c ON p.Category_ID = c.category_id
+    GROUP BY p.Product_ID, c.category_id, p.Product_Name, c.category_name
+    ORDER BY Units_Sold ASC
+    LIMIT 10
+    """).fetchdf()
+
+print("Bottom 10 Products by Units Sold:")
+bottom_products_units
+# %%
+# SQL: Top/Bottom Stores
 top_stores_revenue = con.execute("""
     SELECT
     st.Store_ID,
@@ -149,6 +185,25 @@ top_stores_revenue = con.execute("""
 
 print("Top 10 Stores by Revenue:")
 top_stores_revenue
+
+# %%
+bottom_stores_revenue = con.execute("""
+    SELECT
+    st.Store_ID,
+    st.Store_Name,
+    st.City,
+    st.Country,
+    SUM(s.quantity * p.Price) as Total_Revenue
+    FROM stores st
+    JOIN sales s ON s.store_id = st.Store_ID
+    JOIN products p ON p.Product_ID = s.product_id
+    GROUP BY st.Store_ID, st.Store_Name, st.City, st.Country
+    ORDER BY Total_Revenue ASC
+    LIMIT 10
+    """).fetchdf()
+
+print("Bottom 10 Stores by Revenue:")
+bottom_stores_revenue
 # %%
 top_countries_revenue = con.execute("""
     WITH Country_Revenue AS(
@@ -182,3 +237,90 @@ top_countries_revenue = con.execute("""
 
 print("Top 10 Countries by Revenue:")
 top_countries_revenue
+
+# %%
+bottom_countries_revenue = con.execute("""
+    WITH Country_Revenue AS(
+        SELECT
+            st.Country,
+            SUM(s.quantity * p.Price) as Country_Revenue
+        FROM stores st
+        JOIN sales s ON s.store_id = st.Store_ID
+        JOIN products p ON p.Product_ID = s.product_id
+        GROUP BY st.Country
+    ),
+    Total_Revenue AS (
+        SELECT SUM(Country_Revenue) AS Total_Revenue
+        FROM Country_Revenue
+    ),
+    Max_Revenue AS (
+        SELECT MAX(Country_Revenue) AS Max_Revenue
+        FROM Country_Revenue
+    )                                 
+    SELECT
+        cr.Country,
+        cr.Country_Revenue,
+        CAST((cr.Country_Revenue * 100.0 / tr.Total_Revenue) AS DECIMAL(4,2)) AS Revenue_Percentage,
+        CAST(mr.Max_Revenue - cr.Country_Revenue AS INT) AS Revenue_Difference
+    FROM Country_Revenue cr
+    CROSS JOIN Total_Revenue tr
+    CROSS JOIN Max_Revenue mr
+    ORDER BY cr.Country_Revenue ASC
+    LIMIT 10
+    """).fetchdf()
+
+print("Bottom 10 Countries by Revenue:")
+bottom_countries_revenue
+
+# %%
+#SQL Most/Least Warranty Claims
+most_warranty_claims = con.execute("""
+    WITH Completed_Claims AS (
+        SELECT 
+            COUNT(w.claim_id) AS Completed_Claims,
+            st.Country
+        FROM warranty w
+        JOIN sales s ON s.sale_id = w.sale_id
+        JOIN stores st ON st.Store_ID = s.store_id
+        WHERE w.repair_status = 'Completed'
+        GROUP BY st.Country
+    ),
+    Pending_Claims AS (
+        SELECT 
+            COUNT(w.claim_id) AS Pending_Claims,
+            st.Country
+        FROM warranty w
+        JOIN sales s ON s.sale_id = w.sale_id
+        JOIN stores st ON st.Store_ID = s.store_id
+        WHERE w.repair_status = 'Pending'
+        GROUP BY st.Country                               
+    ),
+    IP_Claims AS (
+        SELECT 
+            COUNT(w.claim_id) AS IP_Claims,
+            st.Country
+        FROM warranty w
+        JOIN sales s ON s.sale_id = w.sale_id
+        JOIN stores st ON st.Store_ID = s.store_id
+        WHERE w.repair_status = 'In Progress'
+        GROUP BY st.Country                
+    )
+    SELECT
+        COALESCE(cc.Country, pc.Country, ip.Country) as Country,
+        COALESCE(cc.Completed_Claims, 0) AS Completed_Claims,
+        COALESCE(pc.Pending_Claims, 0) AS Pending_Claims,
+        COALESCE(ip.IP_Claims, 0) AS In_Progress_Claims,
+        (COALESCE(cc.Completed_Claims, 0) + COALESCE(pc.Pending_Claims, 0) + COALESCE(ip.IP_Claims, 0)) AS Total_Claims
+    FROM
+        Completed_Claims cc
+    FULL JOIN
+        Pending_Claims pc USING (Country)
+    FULL JOIN
+    IP_Claims ip USING (Country)
+    ORDER BY 
+        Total_Claims DESC
+    LIMIT 10
+    """).fetchdf()
+print("Countries with the Most Warranty Claims:")
+most_warranty_claims
+# %%
