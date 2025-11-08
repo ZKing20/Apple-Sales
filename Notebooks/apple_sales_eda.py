@@ -15,77 +15,12 @@
 # ---
 
 # %%
+# Imports and Load sales data
 import pandas as pd
 import os
 import duckdb as db
 
-# List CSVs in Data
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
-csv_files = [f for f in os.listdir(data_path) if f.endswith('.csv')]
-
-print("Your Apple Sales CSVs:")
-if csv_files:    
-    for f in csv_files:
-        print(f"  - {f}")
-else:
-    print("No .csv files found")
-
-#%%
-# Preview CSVs
-category_csv = csv_files[0] if csv_files else None
-if category_csv:
-    df_category = pd.read_csv(f'{data_path}/{category_csv}')
-    print(f"\n {category_csv} Preview:")
-    print("Shape:", df_category.shape)
-    print("Columns:", df_category.columns.tolist())
-    print(df_category.head())
-else:
-    print("No category CSV found!")
-
-
-products_csv = csv_files[1] if csv_files else None
-if products_csv:
-    df_products = pd.read_csv(f'{data_path}/{products_csv}')
-    print(f"\n {products_csv} Preview:")
-    print("Shape:", df_products.shape)
-    print("Columns:", df_products.columns.tolist())
-    print(df_products.head())
-else:
-    print("No product CSV found!")
-
-sales_csv = csv_files[2] if csv_files else None
-if sales_csv:
-    df_sales = pd.read_csv(f'{data_path}/{sales_csv}')
-    print(f"\n {sales_csv} Preview:")
-    print("Shape:", df_sales.shape)
-    print("Columns:", df_sales.columns.tolist())
-    print(df_sales.head())
-else:
-    print("No Sales CSV found!")
-
-stores_csv = csv_files[3] if csv_files else None
-if stores_csv:
-    df_stores = pd.read_csv(f'{data_path}/{stores_csv}')
-    print(f"\n {stores_csv} Preview:")
-    print("Shape:", df_stores.shape)
-    print("Columns:", df_stores.columns.tolist())
-    print(df_stores.head())
-else:
-    print("No Stores CSV found!")
-
-warranty_csv = csv_files[4] if csv_files else None
-if warranty_csv:
-    df_warranty = pd.read_csv(f'{data_path}/{warranty_csv}')
-    print(f"\n {warranty_csv} Preview:")
-    print("Shape:", df_warranty.shape)
-    print("Columns:", df_warranty.columns.tolist())
-    print(df_warranty.head())
-else:
-    print("No Warranty CSV found!")
-
-
-# %%
-# Load MAIN sales data
 df_sales = pd.read_csv(f'{data_path}/sales.csv')
 con = db.connect()
 con.register('sales', df_sales)
@@ -95,7 +30,6 @@ con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
 con.register('warranty', pd.read_csv(f'{data_path}/warranty.csv'))
 
 # %%
-
 # SQL: Top/Bottom Products
 top_products_revenue = con.execute("""
     SELECT 
@@ -110,7 +44,6 @@ top_products_revenue = con.execute("""
     ORDER BY Total_Revenue DESC
     LIMIT 10
     """).fetchdf()
-
 print("Top 10 Products by Revenue:")
 top_products_revenue
 
@@ -128,9 +61,9 @@ bottom_products_revenue = con.execute("""
     ORDER BY Total_Revenue ASC
     LIMIT 10
     """).fetchdf()
-
 print("Bottom 10 Products by Revenue:")
 bottom_products_revenue
+
 # %%
 top_products_units = con.execute("""
     SELECT 
@@ -145,7 +78,6 @@ top_products_units = con.execute("""
     ORDER BY Units_Sold DESC
     LIMIT 10
     """).fetchdf()
-
 print("Top 10 Products by Units Sold:")
 top_products_units
 
@@ -163,11 +95,11 @@ bottom_products_units = con.execute("""
     ORDER BY Units_Sold ASC
     LIMIT 10
     """).fetchdf()
-
 print("Bottom 10 Products by Units Sold:")
 bottom_products_units
+
 # %%
-# SQL: Top/Bottom Stores
+# Top/Bottom Stores by Revenue
 top_stores_revenue = con.execute("""
     SELECT
     st.Store_ID,
@@ -182,7 +114,6 @@ top_stores_revenue = con.execute("""
     ORDER BY Total_Revenue DESC
     LIMIT 10
     """).fetchdf()
-
 print("Top 10 Stores by Revenue:")
 top_stores_revenue
 
@@ -201,10 +132,11 @@ bottom_stores_revenue = con.execute("""
     ORDER BY Total_Revenue ASC
     LIMIT 10
     """).fetchdf()
-
 print("Bottom 10 Stores by Revenue:")
 bottom_stores_revenue
+
 # %%
+# Top/Bottom Countries by Revenue
 top_countries_revenue = con.execute("""
     WITH Country_Revenue AS(
         SELECT
@@ -234,7 +166,6 @@ top_countries_revenue = con.execute("""
     ORDER BY cr.Country_Revenue DESC
     LIMIT 10
     """).fetchdf()
-
 print("Top 10 Countries by Revenue:")
 top_countries_revenue
 
@@ -268,12 +199,11 @@ bottom_countries_revenue = con.execute("""
     ORDER BY cr.Country_Revenue ASC
     LIMIT 10
     """).fetchdf()
-
 print("Bottom 10 Countries by Revenue:")
 bottom_countries_revenue
 
 # %%
-#SQL Most/Least Warranty Claims
+# Most/Least Warranty Claims
 most_warranty_claims = con.execute("""
     WITH Completed_Claims AS (
         SELECT 
@@ -323,6 +253,7 @@ most_warranty_claims = con.execute("""
     """).fetchdf()
 print("Countries with the Most Amount of Warranty Claims:")
 most_warranty_claims
+
 # %%
 least_warranty_claims = con.execute("""
     WITH Completed_Claims AS (
@@ -376,7 +307,7 @@ least_warranty_claims
 
 # %%
 # Time based queries
-Country_Monthly_Revenue = con.execute("""
+Top_Country_Monthly_Revenue = con.execute("""
     SELECT
         st.Country,
         SUM(s.quantity * p.Price) AS Monthly_Revenue,
@@ -396,4 +327,132 @@ Country_Monthly_Revenue = con.execute("""
         Month
     """).fetchdf()
 print("The Monthly Revenue by Country is:")
-Country_Monthly_Revenue
+Top_Country_Monthly_Revenue
+
+# %%
+Bottom_Country_Monthly_Revenue = con.execute("""
+    SELECT
+        st.Country,
+        SUM(s.quantity * p.Price) AS Monthly_Revenue,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS Year,
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS Month
+    FROM
+        sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN stores st ON s.store_id = st.Store_ID
+    GROUP BY
+        st.Country,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
+    ORDER BY
+        Monthly_Revenue ASC,                              
+        Year,
+        Month
+    """).fetchdf()
+print("The Monthly Revenue by Country is:")
+Bottom_Country_Monthly_Revenue
+
+# %%
+Top_Stores_Monthly_Revenue = con.execute("""
+    SELECT
+        st.Store_ID,
+        st.Store_Name,
+        SUM(s.quantity * p.Price) AS Monthly_Revenue,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS Year,
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS Month
+    FROM
+        sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN stores st ON s.store_id = st.Store_ID
+    GROUP BY
+        st.Store_ID,
+        st.Store_Name,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
+    ORDER BY
+        Monthly_Revenue DESC,                              
+        Year,
+        Month
+    """).fetchdf()
+print("The Monthly Revenue by Store is:")
+Top_Stores_Monthly_Revenue
+
+# %%
+Bottom_Stores_Monthly_Revenue = con.execute("""
+    SELECT
+        st.Store_ID,
+        st.Store_Name,
+        SUM(s.quantity * p.Price) AS Monthly_Revenue,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS Year,
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS Month
+    FROM
+        sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN stores st ON s.store_id = st.Store_ID
+    GROUP BY
+        st.Store_ID,
+        st.Store_Name,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
+    ORDER BY
+        Monthly_Revenue ASC,                              
+        Year,
+        Month
+    """).fetchdf()
+print("The Monthly Revenue by Store is:")
+Bottom_Stores_Monthly_Revenue
+
+# %%
+# Claims Rate by Product/Store 
+Claims_Rate_Product = con.execute("""
+    WITH Claims_Rate AS (
+    SELECT
+        p.Product_ID,
+        p.Product_Name,
+        CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate
+    FROM
+        products p
+    LEFT JOIN sales s ON p.Product_ID = s.product_id
+    LEFT JOIN warranty w ON s.sale_id = w.sale_id
+    GROUP BY
+        p.Product_ID,
+        p.Product_Name
+    )
+    SELECT
+        cr.Product_ID,
+        cr.Product_Name,
+        cr.Claims_Rate 
+    FROM
+        Claims_Rate cr
+    ORDER BY 
+        cr.Claims_Rate DESC
+    """).fetchdf()
+print("The Claims Rate for each product is:")
+Claims_Rate_Product
+
+# %%
+Claims_Rate_Store = con.execute("""
+    WITH Claims_Rate AS (
+    SELECT
+        st.Store_ID,
+        st.Store_Name,
+        CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate
+    FROM
+        stores st
+    LEFT JOIN sales s ON st.Store_ID = s.store_id
+    LEFT JOIN warranty w ON s.sale_id = w.sale_id
+    GROUP BY
+        st.Store_ID,
+        st.Store_Name
+    )
+    SELECT
+        cr.Store_ID,
+        cr.Store_Name,
+        cr.Claims_Rate 
+    FROM
+        Claims_Rate cr
+    ORDER BY 
+        cr.Claims_Rate DESC
+    """).fetchdf()
+print("The Claims Rate for each store is:")
+Claims_Rate_Store
