@@ -21,9 +21,8 @@ import os
 import duckdb as db
 
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
-df_sales = pd.read_csv(f'{data_path}/sales.csv')
 con = db.connect()
-con.register('sales', df_sales)
+con.register('sales', pd.read_csv(f'{data_path}/sales.csv'))
 con.register('products', pd.read_csv(f'{data_path}/products.csv'))
 con.register('category', pd.read_csv(f'{data_path}/category.csv'))
 con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
