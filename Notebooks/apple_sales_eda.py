@@ -321,6 +321,79 @@ most_warranty_claims = con.execute("""
         Total_Claims DESC
     LIMIT 10
     """).fetchdf()
-print("Countries with the Most Warranty Claims:")
+print("Countries with the Most Amount of Warranty Claims:")
 most_warranty_claims
 # %%
+least_warranty_claims = con.execute("""
+    WITH Completed_Claims AS (
+        SELECT 
+            COUNT(w.claim_id) AS Completed_Claims,
+            st.Country
+        FROM warranty w
+        JOIN sales s ON s.sale_id = w.sale_id
+        JOIN stores st ON st.Store_ID = s.store_id
+        WHERE w.repair_status = 'Completed'
+        GROUP BY st.Country
+    ),
+    Pending_Claims AS (
+        SELECT 
+            COUNT(w.claim_id) AS Pending_Claims,
+            st.Country
+        FROM warranty w
+        JOIN sales s ON s.sale_id = w.sale_id
+        JOIN stores st ON st.Store_ID = s.store_id
+        WHERE w.repair_status = 'Pending'
+        GROUP BY st.Country                               
+    ),
+    IP_Claims AS (
+        SELECT 
+            COUNT(w.claim_id) AS IP_Claims,
+            st.Country
+        FROM warranty w
+        JOIN sales s ON s.sale_id = w.sale_id
+        JOIN stores st ON st.Store_ID = s.store_id
+        WHERE w.repair_status = 'In Progress'
+        GROUP BY st.Country                
+    )
+    SELECT
+        COALESCE(cc.Country, pc.Country, ip.Country) as Country,
+        COALESCE(cc.Completed_Claims, 0) AS Completed_Claims,
+        COALESCE(pc.Pending_Claims, 0) AS Pending_Claims,
+        COALESCE(ip.IP_Claims, 0) AS In_Progress_Claims,
+        (COALESCE(cc.Completed_Claims, 0) + COALESCE(pc.Pending_Claims, 0) + COALESCE(ip.IP_Claims, 0)) AS Total_Claims
+    FROM
+        Completed_Claims cc
+    FULL JOIN
+        Pending_Claims pc USING (Country)
+    FULL JOIN
+    IP_Claims ip USING (Country)
+    ORDER BY 
+        Total_Claims ASC
+    LIMIT 10
+    """).fetchdf()
+print("Countries with the Least Amount of Warranty Claims:")
+least_warranty_claims
+
+# %%
+# Time based queries
+Country_Monthly_Revenue = con.execute("""
+    SELECT
+        st.Country,
+        SUM(s.quantity * p.Price) AS Monthly_Revenue,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS Year,
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS Month
+    FROM
+        sales s
+    JOIN products p ON s.product_id = p.Product_ID
+    JOIN stores st ON s.store_id = st.Store_ID
+    GROUP BY
+        st.Country,
+        EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
+        EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
+    ORDER BY
+        Monthly_Revenue DESC,                              
+        Year,
+        Month
+    """).fetchdf()
+print("The Monthly Revenue by Country is:")
+Country_Monthly_Revenue
