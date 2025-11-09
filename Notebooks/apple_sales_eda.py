@@ -19,6 +19,8 @@
 import pandas as pd
 import os
 import duckdb as db
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 con = db.connect()
@@ -455,3 +457,14 @@ Claims_Rate_Store = con.execute("""
     """).fetchdf()
 print("The Claims Rate for each store is:")
 Claims_Rate_Store
+
+# %%
+# Bar Chart: Top 10 Products by Revenue
+plt.figure(figsize=(10,6))
+sns.barplot(data=top_products_revenue, x='Product_Name', y='Total_Revenue')
+plt.title('Top 10 Products by Revenue')
+plt.xlabel('Product Name')
+plt.ylabel('Total Revenue')
+plt.xticks(rotation=30)
+plt.show()
+# %%
