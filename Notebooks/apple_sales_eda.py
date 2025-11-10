@@ -465,6 +465,19 @@ sns.barplot(data=top_products_revenue, x='Product_Name', y='Total_Revenue')
 plt.title('Top 10 Products by Revenue')
 plt.xlabel('Product Name')
 plt.ylabel('Total Revenue')
-plt.xticks(rotation=30)
+plt.xticks(rotation=45, ha='right')
 plt.show()
 # %%
+# Line Grapht: Top Store by Monthly Revenue
+country_totals = Top_Country_Monthly_Revenue.groupby('Country')['Monthly_Revenue'].sum().reset_index()
+top_country = country_totals.loc[country_totals['Monthly_Revenue'].idxmax(), 'Country']
+top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country]
+top_country_data['Year_Month'] = top_country_data['Year'].astype(str) + '-' + top_country_data['Month'].astype(str).str.zfill(2)
+plt.figure(figsize=(10,6))
+sns.lineplot(data=top_country_data, x='Year_Month', y='Monthly_Revenue', marker = 'o')
+plt.title(f'Monthly Revenue Trend for Top Country: {top_country}')
+plt.xlabel('Store Name')
+plt.ylabel('Monthly Revenue')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+plt.show()
