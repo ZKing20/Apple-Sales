@@ -471,9 +471,10 @@ plt.show()
 # Line Grapht: Top Store by Monthly Revenue
 country_totals = Top_Country_Monthly_Revenue.groupby('Country')['Monthly_Revenue'].sum().reset_index()
 top_country = country_totals.loc[country_totals['Monthly_Revenue'].idxmax(), 'Country']
-top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country]
+top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country].copy()
 top_country_data['Year_Month'] = top_country_data['Year'].astype(str) + '-' + top_country_data['Month'].astype(str).str.zfill(2)
-plt.figure(figsize=(10,6))
+top_country_data = top_country_data.sort_values('Year_Month')
+plt.figure(figsize=(20,6))
 sns.lineplot(data=top_country_data, x='Year_Month', y='Monthly_Revenue', marker = 'o')
 plt.title(f'Monthly Revenue Trend for Top Country: {top_country}')
 plt.xlabel('Store Name')
