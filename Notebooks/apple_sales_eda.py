@@ -24,7 +24,7 @@ import seaborn as sns
 
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 con = db.connect()
-con.register('sales', pd.read_csv(f'{data_path}/sales.csv'))
+con.register('sales', pd.read_csv(f'{data_path}/sales_cleaned.csv'))
 con.register('products', pd.read_csv(f'{data_path}/products.csv'))
 con.register('category', pd.read_csv(f'{data_path}/category.csv'))
 con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
@@ -474,7 +474,7 @@ top_country = country_totals.loc[country_totals['Monthly_Revenue'].idxmax(), 'Co
 top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country].copy()
 top_country_data['Year_Month'] = top_country_data['Year'].astype(str) + '-' + top_country_data['Month'].astype(str).str.zfill(2)
 top_country_data = top_country_data.sort_values('Year_Month')
-plt.figure(figsize=(20,6))
+plt.figure(figsize=(20,10))
 sns.lineplot(data=top_country_data, x='Year_Month', y='Monthly_Revenue', marker = 'o')
 plt.title(f'Monthly Revenue Trend for Top Country: {top_country}')
 plt.xlabel('Year-Month')
@@ -483,12 +483,13 @@ plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.show()
 
+# %%
 # Top 5 countries
 top_5_countries = country_totals['Country'].head(5).tolist()
 top_5_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'].isin(top_5_countries)].copy()
 top_5_country_data['Year_Month'] =top_5_country_data['Year'].astype(str) + '-' + top_5_country_data['Month'].astype(str).str.zfill(2)
 top_5_country_data = top_5_country_data.sort_values('Year_Month')
-plt.figure(figsize=(20,6))
+plt.figure(figsize=(20,10))
 sns.lineplot(data=top_5_country_data, x='Year_Month', y='Monthly_Revenue', hue = 'Country', marker = 'o')
 plt.title('Monthly Revenue Trend for Top 5 Stores')
 plt.xlabel('Year-Month')
@@ -498,13 +499,14 @@ plt.grid(True)
 plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
 
+# %%
 # Top 5 Stores
 store_totals = Top_Stores_Monthly_Revenue.groupby('Store_Name')['Monthly_Revenue'].sum().reset_index()
 top_5_stores = store_totals['Store_Name'].head(5).tolist()
 top_5_store_data = Top_Stores_Monthly_Revenue[Top_Stores_Monthly_Revenue['Store_Name'].isin(top_5_stores)].copy()
 top_5_store_data['Year_Month'] =top_5_store_data['Year'].astype(str) + '-' + top_5_store_data['Month'].astype(str).str.zfill(2)
 top_5_store_data = top_5_store_data.sort_values('Year_Month')
-plt.figure(figsize=(20,6))
+plt.figure(figsize=(20,10))
 sns.lineplot(data=top_5_store_data, x='Year_Month', y='Monthly_Revenue', hue = 'Store_Name', marker = 'o')
 plt.title('Monthly Revenue Trend for Top 5 Stores')
 plt.xlabel('Year-Month')
