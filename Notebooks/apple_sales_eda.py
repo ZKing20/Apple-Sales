@@ -437,6 +437,7 @@ Claims_Rate_Store = con.execute("""
     SELECT
         st.Store_ID,
         st.Store_Name,
+        COUNT(w.claim_id) AS Claims_Count,
         CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate
     FROM
         stores st
@@ -449,6 +450,7 @@ Claims_Rate_Store = con.execute("""
     SELECT
         cr.Store_ID,
         cr.Store_Name,
+        cr.Claims_Count,
         cr.Claims_Rate 
     FROM
         Claims_Rate cr
@@ -502,16 +504,31 @@ plt.show()
 # %%
 # Top 5 Stores
 store_totals = Top_Stores_Monthly_Revenue.groupby('Store_Name')['Monthly_Revenue'].sum().reset_index()
+store_totals = store_totals.rename(columns={'Monthly_Revenue': 'Total_Revenue'})
 top_5_stores = store_totals['Store_Name'].head(5).tolist()
 top_5_store_data = Top_Stores_Monthly_Revenue[Top_Stores_Monthly_Revenue['Store_Name'].isin(top_5_stores)].copy()
-top_5_store_data['Year_Month'] =top_5_store_data['Year'].astype(str) + '-' + top_5_store_data['Month'].astype(str).str.zfill(2)
+top_5_store_data['Year_Month'] = top_5_store_data['Year'].astype(str) + '-' + top_5_store_data['Month'].astype(str).str.zfill(2)
 top_5_store_data = top_5_store_data.sort_values('Year_Month')
 plt.figure(figsize=(20,10))
-sns.lineplot(data=top_5_store_data, x='Year_Month', y='Monthly_Revenue', hue = 'Store_Name', marker = 'o')
+sns.lineplot(data = top_5_store_data, x='Year_Month', y='Monthly_Revenue', hue = 'Store_Name', marker = 'o')
 plt.title('Monthly Revenue Trend for Top 5 Stores')
 plt.xlabel('Year-Month')
 plt.ylabel('Monthly Revenue')
 plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.show()
+
+#%%
+# Claims Rate vs. Revenue
+claims_rate_store_total = pd.merge(Claims_Rate_Store, store_totals, on='Store_Name', how='left')
+claims_rate_store_total['Claims_Per_Revenue'] = claims_rate_store_total['Claims_Count'] / claims_rate_store_total['Total_Revenue'] * 1000
+claims_rate_store_total['Claims_Per_Revenue'] = claims_rate_store_total['Claims_Per_Revenue'].fillna(0)
+claims_rate_store_total = claims_rate_store_total.sort_values(by='Claims_Per_Revenue', ascending=False)
+plt.figure(figsize=(20, 10))
+sns.barplot(data=claims_rate_store_total, x='Store_Name', y='Claims_Per_Revenue', errorbar=None)
+plt.title('Claims per $1000 by Store')
+plt.xlabel('Store Name')
+plt.ylabel('Claims Per $1000')
+plt.xticks(rotation=45, ha='right')
 plt.show()
