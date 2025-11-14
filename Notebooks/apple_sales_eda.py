@@ -521,10 +521,28 @@ plt.show()
 
 #%%
 # Claims Rate vs. Revenue
-claims_rate_store_total = pd.merge(Claims_Rate_Store, store_totals, on='Store_Name', how='left')
-claims_rate_store_total['Claims_Per_Revenue'] = claims_rate_store_total['Claims_Count'] / claims_rate_store_total['Total_Revenue'] * 1000
+claims_rate_store_clean = (
+    Claims_Rate_Store
+    .groupby('Store_Name', as_index=False)
+    .agg({'Claims_Count': 'sum'})
+)
+store_totals_clean = (
+    store_totals
+    .groupby('Store_Name', as_index=False)
+    .agg({'Total_Revenue': 'sum'})
+)
+claims_rate_store_total = pd.merge(
+    claims_rate_store_clean, 
+    store_totals_clean, 
+    on='Store_Name', 
+    how='left'
+)
+claims_rate_store_total['Claims_Per_Revenue'] = (
+    claims_rate_store_total['Claims_Count'] / claims_rate_store_total['Total_Revenue'] * 1000)
 claims_rate_store_total['Claims_Per_Revenue'] = claims_rate_store_total['Claims_Per_Revenue'].fillna(0)
-claims_rate_store_total = claims_rate_store_total.sort_values(by='Claims_Per_Revenue', ascending=False)
+claims_rate_store_total = claims_rate_store_total.sort_values(
+    by='Claims_Per_Revenue', ascending=False
+)
 plt.figure(figsize=(20, 10))
 sns.barplot(data=claims_rate_store_total, x='Store_Name', y='Claims_Per_Revenue', errorbar=None)
 plt.title('Claims per $1000 by Store')
