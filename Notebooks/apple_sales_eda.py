@@ -451,9 +451,11 @@ Claims_Rate_Store = con.execute("""
         cr.Store_ID,
         cr.Store_Name,
         cr.Claims_Count,
-        cr.Claims_Rate 
+        cr.Claims_Rate, 
+        st.Country
     FROM
-        Claims_Rate cr
+        Claims_Rate cr,
+        stores st
     ORDER BY 
         cr.Claims_Rate DESC
     """).fetchdf()
@@ -523,7 +525,7 @@ plt.show()
 # Claims Rate vs. Revenue
 claims_rate_store_clean = (
     Claims_Rate_Store
-    .groupby('Store_Name', as_index=False)
+    .groupby(['Country', 'Store_Name'], as_index=False)
     .agg({'Claims_Count': 'sum'})
 )
 store_totals_clean = (
@@ -544,9 +546,10 @@ claims_rate_store_total = claims_rate_store_total.sort_values(
     by='Claims_Per_Revenue', ascending=False
 )
 plt.figure(figsize=(20, 10))
-sns.barplot(data=claims_rate_store_total, x='Store_Name', y='Claims_Per_Revenue', errorbar=None)
+sns.barplot(data=claims_rate_store_total, x='Store_Name', y='Claims_Per_Revenue', hue='Country', errorbar=None, dodge=False)
 plt.title('Claims per $1000 by Store')
 plt.xlabel('Store Name')
 plt.ylabel('Claims Per $1000')
 plt.xticks(rotation=45, ha='right')
+plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
