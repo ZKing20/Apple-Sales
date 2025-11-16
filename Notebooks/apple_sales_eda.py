@@ -25,10 +25,10 @@ import seaborn as sns
 data_path = os.path.join(os.path.dirname(__file__), '..', 'Data')
 con = db.connect()
 con.register('sales', pd.read_csv(f'{data_path}/sales_cleaned.csv'))
-con.register('products', pd.read_csv(f'{data_path}/products.csv'))
-con.register('category', pd.read_csv(f'{data_path}/category.csv'))
-con.register('stores', pd.read_csv(f'{data_path}/stores.csv'))
-con.register('warranty', pd.read_csv(f'{data_path}/warranty.csv'))
+con.register('products', pd.read_csv(f'{data_path}/products_cleaned.csv'))
+con.register('category', pd.read_csv(f'{data_path}/category_cleaned.csv'))
+con.register('stores', pd.read_csv(f'{data_path}/stores_cleaned.csv'))
+con.register('warranty', pd.read_csv(f'{data_path}/warranty_cleaned.csv'))
 
 # %%
 # SQL: Top/Bottom Products
