@@ -31,7 +31,7 @@ con.register('stores', pd.read_csv(f'{data_path}/stores_cleaned.csv'))
 con.register('warranty', pd.read_csv(f'{data_path}/warranty_cleaned.csv'))
 
 # %%
-# SQL: Top/Bottom Products
+# Top/Bottom Products by Revenue
 top_products_revenue = con.execute("""
     SELECT 
     p.Product_Name,
@@ -66,6 +66,7 @@ print("Bottom 10 Products by Revenue:")
 bottom_products_revenue
 
 # %%
+# Top/Bottom Products by units sold
 top_products_units = con.execute("""
     SELECT 
         p.Product_Name,
@@ -307,7 +308,7 @@ print("Countries with the Least Amount of Warranty Claims:")
 least_warranty_claims
 
 # %%
-# Time based queries
+# Top/Bottom Country Revenue
 Top_Country_Monthly_Revenue = con.execute("""
     SELECT
         st.Country,
@@ -354,6 +355,7 @@ print("The Monthly Revenue by Country is:")
 Bottom_Country_Monthly_Revenue
 
 # %%
+# Top/Bottom Store Revenue
 Top_Stores_Monthly_Revenue = con.execute("""
     SELECT
         st.Store_ID,
@@ -454,8 +456,8 @@ Claims_Rate_Store = con.execute("""
         cr.Claims_Rate, 
         st.Country
     FROM
-        Claims_Rate cr,
-        stores st
+        Claims_Rate cr
+    JOIN stores st ON cr.Store_ID = st.Store_ID
     ORDER BY 
         cr.Claims_Rate DESC
     """).fetchdf()
@@ -521,23 +523,12 @@ plt.grid(True)
 plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
 
-#%%
+# %%
 # Claims Rate vs. Revenue
-claims_rate_store_clean = (
-    Claims_Rate_Store
-    .groupby(['Country', 'Store_Name'], as_index=False)
-    .agg({'Claims_Count': 'sum'})
-)
-store_totals_clean = (
-    store_totals
-    .groupby('Store_Name', as_index=False)
-    .agg({'Total_Revenue': 'sum'})
-)
-claims_rate_store_total = pd.merge(
-    claims_rate_store_clean, 
-    store_totals_clean, 
-    on='Store_Name', 
-    how='left'
+claims_rate_store_total = (pd.merge(
+    Claims_Rate_Store, store_totals, 
+    on='Store_Name', how='left')
+    .drop_duplicates(subset=['Store_Name'])
 )
 claims_rate_store_total['Claims_Per_Revenue'] = (
     claims_rate_store_total['Claims_Count'] / claims_rate_store_total['Total_Revenue'] * 1000)
@@ -546,7 +537,7 @@ claims_rate_store_total = claims_rate_store_total.sort_values(
     by='Claims_Per_Revenue', ascending=False
 )
 plt.figure(figsize=(20, 10))
-sns.barplot(data=claims_rate_store_total, x='Store_Name', y='Claims_Per_Revenue', hue='Country', errorbar=None, dodge=False)
+sns.barplot(data=claims_rate_store_total, x='Store_Name', y='Claims_Per_Revenue', hue='Country', errorbar=None, dodge=False, palette='tab20')
 plt.title('Claims per $1000 by Store')
 plt.xlabel('Store Name')
 plt.ylabel('Claims Per $1000')
