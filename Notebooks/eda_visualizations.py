@@ -34,59 +34,10 @@ plt.ylabel('Total Revenue')
 plt.xticks(rotation=45, ha='right')
 plt.show()
 # %%
-# Line Graph: Top Store by Monthly Revenue
-Top_Country_Monthly_Revenue = load_Top_Country_Monthly_Revenue()
-country_totals = Top_Country_Monthly_Revenue.groupby('Country')['Monthly_Revenue'].sum().reset_index()
-top_country = country_totals.loc[country_totals['Monthly_Revenue'].idxmax(), 'Country']
-top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country].copy()
-top_country_data['Year_Month'] = top_country_data['Year'].astype(str) + '-' + top_country_data['Month'].astype(str).str.zfill(2)
-top_country_data = top_country_data.sort_values('Year_Month')
-plt.figure(figsize=(20,10))
-sns.lineplot(data=top_country_data, x='Year_Month', y='Monthly_Revenue', marker = 'o')
-plt.title(f'Monthly Revenue Trend for Top Country: {top_country}')
-plt.xlabel('Year-Month')
-plt.ylabel('Monthly Revenue')
-plt.xticks(rotation=45, ha='right')
-plt.grid(True)
-plt.show()
-
-# %%
-# Top 5 countries
-top_5_countries = country_totals['Country'].head(5).tolist()
-top_5_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'].isin(top_5_countries)].copy()
-top_5_country_data['Year_Month'] =top_5_country_data['Year'].astype(str) + '-' + top_5_country_data['Month'].astype(str).str.zfill(2)
-top_5_country_data = top_5_country_data.sort_values('Year_Month')
-plt.figure(figsize=(20,10))
-sns.lineplot(data=top_5_country_data, x='Year_Month', y='Monthly_Revenue', hue = 'Country', marker = 'o')
-plt.title('Monthly Revenue Trend for Top 5 Stores')
-plt.xlabel('Year-Month')
-plt.ylabel('Monthly Revenue')
-plt.xticks(rotation=45, ha='right')
-plt.grid(True)
-plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
-plt.show()
-
-# %%
-# Top 5 Stores
+# Bar Chart: Claims Rate vs. Revenue
 Top_Stores_Monthly_Revenue = load_Top_Stores_Monthly_Revenue()
 store_totals = Top_Stores_Monthly_Revenue.groupby('Store_Name')['Monthly_Revenue'].sum().reset_index()
 store_totals = store_totals.rename(columns={'Monthly_Revenue': 'Total_Revenue'})
-top_5_stores = store_totals['Store_Name'].head(5).tolist()
-top_5_store_data = Top_Stores_Monthly_Revenue[Top_Stores_Monthly_Revenue['Store_Name'].isin(top_5_stores)].copy()
-top_5_store_data['Year_Month'] = top_5_store_data['Year'].astype(str) + '-' + top_5_store_data['Month'].astype(str).str.zfill(2)
-top_5_store_data = top_5_store_data.sort_values('Year_Month')
-plt.figure(figsize=(20,10))
-sns.lineplot(data = top_5_store_data, x='Year_Month', y='Monthly_Revenue', hue = 'Store_Name', marker = 'o')
-plt.title('Monthly Revenue Trend for Top 5 Stores')
-plt.xlabel('Year-Month')
-plt.ylabel('Monthly Revenue')
-plt.xticks(rotation=45, ha='right')
-plt.grid(True)
-plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
-plt.show()
-
-# %%
-# Claims Rate vs. Revenue
 Claims_Rate_Store = load_Claims_Rate_Store()
 claims_rate_store_total = (pd.merge(
     Claims_Rate_Store, store_totals, 
@@ -106,4 +57,52 @@ plt.xlabel('Store Name')
 plt.ylabel('Claims Per $1000')
 plt.xticks(rotation=45, ha='right')
 plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.show()
+# %%
+# Line Graph: Top Store by Monthly Revenue
+Top_Country_Monthly_Revenue = load_Top_Country_Monthly_Revenue()
+country_totals = Top_Country_Monthly_Revenue.groupby('Country')['Monthly_Revenue'].sum().reset_index()
+top_country = country_totals.loc[country_totals['Monthly_Revenue'].idxmax(), 'Country']
+top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country].copy()
+top_country_data['Year_Month'] = top_country_data['Year'].astype(str) + '-' + top_country_data['Month'].astype(str).str.zfill(2)
+top_country_data = top_country_data.sort_values('Year_Month')
+plt.figure(figsize=(20,10))
+sns.lineplot(data=top_country_data, x='Year_Month', y='Monthly_Revenue', marker = 'o')
+plt.title(f'Monthly Revenue Trend for Top Country: {top_country}')
+plt.xlabel('Year-Month')
+plt.ylabel('Monthly Revenue')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+plt.show()
+
+# %%
+# Line Graph: Top 5 countries
+top_5_countries = country_totals['Country'].head(5).tolist()
+top_5_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'].isin(top_5_countries)].copy()
+top_5_country_data['Year_Month'] =top_5_country_data['Year'].astype(str) + '-' + top_5_country_data['Month'].astype(str).str.zfill(2)
+top_5_country_data = top_5_country_data.sort_values('Year_Month')
+plt.figure(figsize=(20,10))
+sns.lineplot(data=top_5_country_data, x='Year_Month', y='Monthly_Revenue', hue = 'Country', marker = 'o')
+plt.title('Monthly Revenue Trend for Top 5 Stores')
+plt.xlabel('Year-Month')
+plt.ylabel('Monthly Revenue')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.show()
+
+# %%
+# Line Graph: Top 5 Stores
+top_5_stores = store_totals['Store_Name'].head(5).tolist()
+top_5_store_data = Top_Stores_Monthly_Revenue[Top_Stores_Monthly_Revenue['Store_Name'].isin(top_5_stores)].copy()
+top_5_store_data['Year_Month'] = top_5_store_data['Year'].astype(str) + '-' + top_5_store_data['Month'].astype(str).str.zfill(2)
+top_5_store_data = top_5_store_data.sort_values('Year_Month')
+plt.figure(figsize=(20,10))
+sns.lineplot(data = top_5_store_data, x='Year_Month', y='Monthly_Revenue', hue = 'Store_Name', marker = 'o')
+plt.title('Monthly Revenue Trend for Top 5 Stores')
+plt.xlabel('Year-Month')
+plt.ylabel('Monthly Revenue')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
