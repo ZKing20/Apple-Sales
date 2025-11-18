@@ -493,3 +493,24 @@ def load_Claims_Rate_Store():
     """).fetchdf()
     con.close()
     return df
+
+# %%
+# Revenue by Category
+def load_category_revenue_by_year():
+    con = get_duckdb_connection()
+    df = con.execute("""
+        SELECT
+            c.category_name,
+            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS year,
+            SUM(s.quantity * p.price) AS revenue
+        FROM sales s
+        JOIN products p ON s.product_id = p.Product_ID
+        JOIN category c ON p.Category_ID = c.category_id
+        GROUP BY 
+            c.category_name, 
+            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y'))
+        ORDER BY
+            c.category_name,
+            year;            
+    """).fetchdf()
+    return df

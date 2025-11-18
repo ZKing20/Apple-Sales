@@ -106,3 +106,23 @@ plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
+
+#%%
+# Horizontal Bar Chart: Revenue by Product Type
+df = load_category_revenue_by_year()
+pivoted = df.pivot(index='category_name', columns='year', values='revenue').fillna(0)
+pivoted['Total_Revenue'] = pivoted.sum(axis=1)
+pivoted = pivoted.sort_values('Total_Revenue', ascending=True)
+pivoted = pivoted.drop(columns=['Total_Revenue'])
+pivoted.plot(
+    kind='barh',
+    stacked=True,
+    figsize=(20,10)
+)
+plt.title('Revenue of Products by Categroy', fontsize=20, pad=20)
+plt.xlabel('Total Revenue', fontsize=18)
+plt.ylabel('Category', fontsize=18)
+plt.grid(axis='x')
+plt.legend(title='Year', bbox_to_anchor=(1.02, 1), loc='upper left')
+plt.tight_layout()
+plt.show()
