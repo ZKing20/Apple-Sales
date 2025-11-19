@@ -62,7 +62,7 @@ plt.show()
 # %%
 # Scatterplot: Claims Rate vs. Total Revenue
 df = load_monthly_claims_revenue_by_store()
-df['Year_Month'] = df['year'].astype(int).astype(str) + '-' + df['month'].astype(int).astype(str.str.zfill(2))
+df['Year_Month'] = df['year'].astype(int).astype(str) + '-' + df['month'].astype(int).astype(str).str.zfill(2)
 df['Claims_Per_1000'] = df.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
 df['Claims_Per_Unit'] = df.apply(lambda r: (r['claim_count'] / r['units_sold']) if r['units_sold'] > 0 else 0, axis = 1)
 snapshot = (df.groupby(['Store_ID', 'Store_Name', 'Country'], as_index=False)
@@ -72,8 +72,7 @@ plt.figure(figsize=(20,10))
 sns.scatterplot(data=snapshot, x='revenue', y='Claims_Per_1000',
                 size='units_sold', sizes=(20,300),
                 hue='Country')
-plt.xscale('log') # Optional depending on how spread out the ranges are
-plt.xlabel('Total Revenue (log scale)')
+plt.xlabel('Total Revenue')
 plt.ylabel('Claims per $1000')
 plt.title('Claims per $1000 vs Revenue by Store')
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')

@@ -535,8 +535,8 @@ def load_monthly_claims_revenue_by_store():
         JOIN stores st ON s.store_id = st.Store_ID
         LEFT JOIN warranty w ON s.sale_id = w.sale_id
         GROUP BY st.Store_ID, st.Store_Name, st.Country,
-                EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m,-%Y')),
-                EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m,-%Y'))
+                EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
+                EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
         ORDER BY 
             st.Store_ID,
             year,
