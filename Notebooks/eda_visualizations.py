@@ -58,6 +58,27 @@ plt.ylabel('Claims Per $1000')
 plt.xticks(rotation=45, ha='right')
 plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
+
+# %%
+# Scatterplot: Claims Rate vs. Total Revenue
+df = load_monthly_claims_revenue_by_store()
+df['Year_Month'] = df['year'].astype(int).astype(str) + '-' + df['month'].astype(int).astype(str.str.zfill(2))
+df['Claims_Per_1000'] = df.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
+df['Claims_Per_Unit'] = df.apply(lambda r: (r['claim_count'] / r['units_sold']) if r['units_sold'] > 0 else 0, axis = 1)
+snapshot = (df.groupby(['Store_ID', 'Store_Name', 'Country'], as_index=False)
+                .agg({'revenue':'sum', 'claim_count':'sum', 'units_sold': 'sum'}))
+snapshot['Claims_Per_1000'] = snapshot.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
+plt.figure(figsize=(20,10))
+sns.scatterplot(data=snapshot, x='revenue', y='Claims_Per_1000',
+                size='units_sold', sizes=(20,300),
+                hue='Country')
+plt.xscale('log') # Optional depending on how spread out the ranges are
+plt.xlabel('Total Revenue (log scale)')
+plt.ylabel('Claims per $1000')
+plt.title('Claims per $1000 vs Revenue by Store')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.show()
+
 # %%
 # Line Graph: Top Store by Monthly Revenue
 Top_Country_Monthly_Revenue = load_Top_Country_Monthly_Revenue()
@@ -123,6 +144,6 @@ plt.title('Revenue of Products by Categroy', fontsize=20, pad=20)
 plt.xlabel('Total Revenue', fontsize=18)
 plt.ylabel('Category', fontsize=18)
 plt.grid(axis='x')
-plt.legend(title='Year', bbox_to_anchor=(1.02, 1), loc='upper left')
+plt.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
 plt.show()

@@ -432,7 +432,7 @@ def load_Bottom_Stores_Monthly_Revenue():
     return df
 
 # %%
-# Claims Rate by Product/Store 
+# Claims Rate by Product
 def load_Claims_Rate_Product():
     con = get_duckdb_connection()
     df = con.execute("""
@@ -462,6 +462,7 @@ def load_Claims_Rate_Product():
     return df
 
 # %%
+# Claims Rate by Store
 def load_Claims_Rate_Store():
     con = get_duckdb_connection()
     df = con.execute("""
@@ -513,4 +514,33 @@ def load_category_revenue_by_year():
             c.category_name,
             year;            
     """).fetchdf()
+    return df
+
+# %%
+# Monthly Claims vs. Revenue by Store
+def load_monthly_claims_revenue_by_store():
+    con = get_duckdb_connection()
+    df = con.execute("""
+        SELECT
+            st.Store_ID,
+            st.Store_Name,
+            st.Country,
+            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS year,
+            EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS month,
+            SUM(s.quantity * p.price) AS revenue,
+            SUM(s.quantity) AS units_sold,
+            COUNT(w.claim_id) AS claim_count
+        FROM sales s
+        JOIN products p ON s.product_id = p.Product_ID
+        JOIN stores st ON s.store_id = st.Store_ID
+        LEFT JOIN warranty w ON s.sale_id = w.sale_id
+        GROUP BY st.Store_ID, st.Store_Name, st.Country,
+                EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m,-%Y')),
+                EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m,-%Y'))
+        ORDER BY 
+            st.Store_ID,
+            year,
+            month
+    """).fetchdf()
+    con.close()
     return df
