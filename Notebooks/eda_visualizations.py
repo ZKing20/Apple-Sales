@@ -17,7 +17,7 @@
 # %%
 # Imports
 import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..', 'Scripts')))
 
 from eda_queries import *
 import pandas as pd
