@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 # %%
 # Bar Chart: Top 10 Products by Revenue
-top_products_revenue = load_top_products_revenue()
+top_products_revenue = load_products_revenue()
 plt.figure(figsize=(10,6))
 sns.barplot(data=top_products_revenue, x='Product_Name', y='Total_Revenue')
 plt.title('Top 10 Products by Revenue')
@@ -35,7 +35,7 @@ plt.xticks(rotation=45, ha='right')
 plt.show()
 # %%
 # Bar Chart: Claims Rate vs. Revenue
-Top_Stores_Monthly_Revenue = load_Top_Stores_Monthly_Revenue()
+Top_Stores_Monthly_Revenue = load_Stores_Monthly_Revenue()
 store_totals = Top_Stores_Monthly_Revenue.groupby('Store_Name')['Monthly_Revenue'].sum().reset_index()
 store_totals = store_totals.rename(columns={'Monthly_Revenue': 'Total_Revenue'})
 Claims_Rate_Store = load_Claims_Rate_Store()
@@ -80,7 +80,7 @@ plt.show()
 
 # %%
 # Line Graph: Top Store by Monthly Revenue
-Top_Country_Monthly_Revenue = load_Top_Country_Monthly_Revenue()
+Top_Country_Monthly_Revenue = load_Country_Monthly_Revenue()
 country_totals = Top_Country_Monthly_Revenue.groupby('Country')['Monthly_Revenue'].sum().reset_index()
 top_country = country_totals.loc[country_totals['Monthly_Revenue'].idxmax(), 'Country']
 top_country_data = Top_Country_Monthly_Revenue[Top_Country_Monthly_Revenue['Country'] == top_country].copy()
