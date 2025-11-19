@@ -103,7 +103,7 @@ top_5_country_data['Year_Month'] =top_5_country_data['Year'].astype(str) + '-' +
 top_5_country_data = top_5_country_data.sort_values('Year_Month')
 plt.figure(figsize=(20,10))
 sns.lineplot(data=top_5_country_data, x='Year_Month', y='Monthly_Revenue', hue = 'Country', marker = 'o')
-plt.title('Monthly Revenue Trend for Top 5 Stores')
+plt.title('Monthly Revenue Trend for Top 5 Countries')
 plt.xlabel('Year-Month')
 plt.ylabel('Monthly Revenue')
 plt.xticks(rotation=45, ha='right')

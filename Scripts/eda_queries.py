@@ -19,20 +19,12 @@
 import os
 import pandas as pd
 import duckdb as db
+from db_connections import get_connection
 
-data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Data'))
-def get_duckdb_connection():
-    con = db.connect()
-    con.register('sales', pd.read_csv(f'{data_path}/sales_cleaned.csv'))
-    con.register('products', pd.read_csv(f'{data_path}/products_cleaned.csv'))
-    con.register('category', pd.read_csv(f'{data_path}/category_cleaned.csv'))
-    con.register('stores', pd.read_csv(f'{data_path}/stores_cleaned.csv'))
-    con.register('warranty', pd.read_csv(f'{data_path}/warranty_cleaned.csv'))
-    return con
+con = get_connection()
 # %%
 # Top/Bottom Products by Revenue
 def load_products_revenue(limit: int=10, sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         SELECT 
         p.Product_Name,
@@ -46,13 +38,11 @@ def load_products_revenue(limit: int=10, sort_order: str = 'DESC'):
         ORDER BY Total_Revenue {sort_order}
         LIMIT {limit}
     """).fetchdf()
-    con.close()
     return df
 
 # %%
 # Top/Bottom Products by units sold
 def load_products_units(limit: int=10, sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         SELECT 
             p.Product_Name,
@@ -66,13 +56,11 @@ def load_products_units(limit: int=10, sort_order: str = 'DESC'):
         ORDER BY Units_Sold {sort_order}
         LIMIT {limit}
     """).fetchdf()
-    con.close()
     return df
 
 # %%
 # Top/Bottom Stores by Revenue
 def load_stores_revenue(limit: int=10, sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         SELECT
         st.Store_ID,
@@ -87,12 +75,10 @@ def load_stores_revenue(limit: int=10, sort_order: str = 'DESC'):
         ORDER BY Total_Revenue {sort_order}
         LIMIT {limit}
     """).fetchdf()
-    con.close()
     return df
 # %%
 # Top/Bottom Countries by Revenue
 def load_countries_revenue(limit: int=10, sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         WITH Country_Revenue AS(
             SELECT
@@ -122,12 +108,10 @@ def load_countries_revenue(limit: int=10, sort_order: str = 'DESC'):
         ORDER BY cr.Country_Revenue {sort_order}
         LIMIT {limit}
     """).fetchdf()
-    con.close()
     return df
 # %%
 # Most/Least Warranty Claims
 def load_warranty_claims(limit: int=10,sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         WITH Completed_Claims AS (
             SELECT 
@@ -175,12 +159,10 @@ def load_warranty_claims(limit: int=10,sort_order: str = 'DESC'):
             Total_Claims {sort_order}
         LIMIT {limit}
     """).fetchdf()
-    con.close()
     return df
 # %%
 # Top/Bottom Country Revenue
 def load_Country_Monthly_Revenue(sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         SELECT
             st.Country,
@@ -200,12 +182,10 @@ def load_Country_Monthly_Revenue(sort_order: str = 'DESC'):
             Year,
             Month
     """).fetchdf()
-    con.close()
     return df
 # %%
 # Top/Bottom Store Revenue
 def load_Stores_Monthly_Revenue(sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         SELECT
             st.Store_ID,
@@ -227,12 +207,10 @@ def load_Stores_Monthly_Revenue(sort_order: str = 'DESC'):
             Year,
             Month
         """).fetchdf()
-    con.close()
     return df
 # %%
 # Claims Rate by Product
 def load_Claims_Rate_Product(sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         WITH Claims_Rate AS (
         SELECT
@@ -256,13 +234,11 @@ def load_Claims_Rate_Product(sort_order: str = 'DESC'):
         ORDER BY 
             cr.Claims_Rate {sort_order}
     """).fetchdf()
-    con.close()
     return df
 
 # %%
 # Claims Rate by Store
 def load_Claims_Rate_Store(sort_order: str = 'DESC'):
-    con = get_duckdb_connection()
     df = con.execute(f"""
         WITH Claims_Rate AS (
         SELECT
@@ -290,13 +266,11 @@ def load_Claims_Rate_Store(sort_order: str = 'DESC'):
         ORDER BY 
             cr.Claims_Rate {sort_order}
     """).fetchdf()
-    con.close()
     return df
 
 # %%
 # Revenue by Category
 def load_category_revenue_by_year():
-    con = get_duckdb_connection()
     df = con.execute("""
         SELECT
             c.category_name,
@@ -317,7 +291,6 @@ def load_category_revenue_by_year():
 # %%
 # Monthly Claims vs. Revenue by Store
 def load_monthly_claims_revenue_by_store():
-    con = get_duckdb_connection()
     df = con.execute("""
         SELECT
             st.Store_ID,
@@ -340,5 +313,4 @@ def load_monthly_claims_revenue_by_store():
             year,
             month
     """).fetchdf()
-    con.close()
     return df
