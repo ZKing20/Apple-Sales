@@ -1,7 +1,7 @@
 # Apple Retail Sales Analysis
 
 ## Objective
-This is a solo data analysis project created by Zachary K King simply to try and get more practice and improve my skills as an aspiring data analyst. My goals for this project are to analyze Apple product, store, and regional revenue performers to identify growth opportunities and operational inefficiencies.
+Analyze Apple sales performance and warranty outcomes across products, stores, and regions to identify patterns, risks, and opportunities related to revenue performance and product quality.
 
 ## Tools Used
 -Python (pandas, duckdb, matplotlib/plotly)
