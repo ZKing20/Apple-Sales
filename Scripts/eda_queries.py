@@ -16,15 +16,12 @@
 
 # %%
 # Imports and Load sales data
-import os
-import pandas as pd
-import duckdb as db
 from db_connections import get_connection
-
 con = get_connection()
+
 # %%
 # Top/Bottom Products by Revenue
-def load_products_revenue(limit: int=10, sort_order: str = 'DESC'):
+def load_products_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT 
         p.Product_Name,

@@ -17,22 +17,39 @@
 # %%
 # Imports
 import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..', 'Scripts')))
-
+sys.path.append(os.path.abspath
+        (os.path.join
+            (os.getcwd(), '..', 'Scripts')
+        )
+)
 from eda_queries import *
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 # %%
-# Bar Chart: Top 10 Products by Revenue
-top_products_revenue = load_products_revenue()
-plt.figure(figsize=(10,6))
-sns.barplot(data=top_products_revenue, x='Product_Name', y='Total_Revenue')
-plt.title('Top 10 Products by Revenue')
-plt.xlabel('Product Name')
-plt.ylabel('Total Revenue')
-plt.xticks(rotation=45, ha='right')
-plt.show()
+# Bar Chart: Top N Products by Revenue
+
+limit = 30
+sort_order = 'DESC'
+
+def plot_top_products_revenue(top_products_revenue):
+
+    plt.figure(figsize=(10,6))
+
+    sns.barplot(
+        data = top_products_revenue,
+        x = 'Product_Name',
+        y = 'Total_Revenue'
+    )
+    plt.title(f'Top {limit} Products by Revenue')
+    plt.xlabel('Product Name')
+    plt.ylabel('Total Revenue')
+    plt.xticks(rotation = 45, ha = 'right')
+    plt.show()
+top_products_revenue = load_products_revenue(limit, sort_order)
+plot_top_products_revenue(top_products_revenue)
+
 # %%
 # Bar Chart: Claims Rate vs. Revenue
 Top_Stores_Monthly_Revenue = load_Stores_Monthly_Revenue()
@@ -61,15 +78,15 @@ plt.show()
 
 # %%
 # Scatterplot: Claims Rate vs. Total Revenue
-df = load_monthly_claims_revenue_by_store()
-df['Year_Month'] = df['year'].astype(int).astype(str) + '-' + df['month'].astype(int).astype(str).str.zfill(2)
-df['Claims_Per_1000'] = df.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
-df['Claims_Per_Unit'] = df.apply(lambda r: (r['claim_count'] / r['units_sold']) if r['units_sold'] > 0 else 0, axis = 1)
-snapshot = (df.groupby(['Store_ID', 'Store_Name', 'Country'], as_index=False)
+monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+monthly_claims_revenue_by_store['Year_Month'] = monthly_claims_revenue_by_store['year'].astype(int).astype(str) + '-' + monthly_claims_revenue_by_store['month'].astype(int).astype(str).str.zfill(2)
+monthly_claims_revenue_by_store['Claims_Per_1000'] = monthly_claims_revenue_by_store.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
+monthly_claims_revenue_by_store['Claims_Per_Unit'] = monthly_claims_revenue_by_store.apply(lambda r: (r['claim_count'] / r['units_sold']) if r['units_sold'] > 0 else 0, axis = 1)
+monthly_claims_revenue_by_store = (monthly_claims_revenue_by_store.groupby(['Store_ID', 'Store_Name', 'Country'], as_index=False)
                 .agg({'revenue':'sum', 'claim_count':'sum', 'units_sold': 'sum'}))
-snapshot['Claims_Per_1000'] = snapshot.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
+monthly_claims_revenue_by_store['Claims_Per_1000'] = monthly_claims_revenue_by_store.apply(lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0, axis = 1)
 plt.figure(figsize=(20,10))
-sns.scatterplot(data=snapshot, x='revenue', y='Claims_Per_1000',
+sns.scatterplot(data=monthly_claims_revenue_by_store, x='revenue', y='Claims_Per_1000',
                 size='units_sold', sizes=(20,300),
                 hue='Country')
 plt.xlabel('Total Revenue')
