@@ -129,12 +129,12 @@ plt.show()
 
 #%%
 # Horizontal Bar Chart: Revenue by Product Type
-df = load_category_revenue_by_year()
-pivoted = df.pivot(index='category_name', columns='year', values='revenue').fillna(0)
-pivoted['Total_Revenue'] = pivoted.sum(axis=1)
-pivoted = pivoted.sort_values('Total_Revenue', ascending=True)
-pivoted = pivoted.drop(columns=['Total_Revenue'])
-pivoted.plot(
+yearly_category_revenue = load_category_revenue_by_year()
+yearly_category_revenue = yearly_category_revenue.pivot(index='category_name', columns='year', values='revenue').fillna(0)
+yearly_category_revenue['Total_Revenue'] = yearly_category_revenue.sum(axis=1)
+yearly_category_revenue = yearly_category_revenue.sort_values('Total_Revenue', ascending=True)
+yearly_category_revenue = yearly_category_revenue.drop(columns=['Total_Revenue'])
+yearly_category_revenue.plot(
     kind='barh',
     stacked=True,
     figsize=(20,10)
@@ -146,3 +146,55 @@ plt.grid(axis='x')
 plt.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
 plt.show()
+
+#%%
+# Heatmap: Claims Rate by Product and Store
+def plot_top_10_claims_heatmap(claims_product_store):
+    top_stores = (
+        claims_product_store.groupby("Store_Name")["Claims_Rate"]
+        .mean()
+        .nlargest(10)
+        .index
+    )
+
+    top_products = (
+        claims_product_store.groupby("Product_Name")["Claims_Rate"]
+        .mean()
+        .nlargest(10)
+        .index
+    )
+    
+    filtered = claims_product_store[
+        claims_product_store["Store_Name"].isin(top_stores) &
+        claims_product_store["Product_Name"].isin(top_products)
+    ]
+    
+    claims_product_store = filtered.pivot_table(
+        index = 'Store_Name',
+        columns = 'Product_Name',
+        values = 'Claims_Rate',
+        aggfunc = 'mean'
+    )
+
+    plt.figure(figsize=(20,10))
+
+    sns.heatmap(
+        claims_product_store,
+        annot = True,
+        fmt = '.2f',
+        cmap = 'Reds',
+        linewidths = .5,
+        cbar_kws = {'label': 'Claims Rate (%)'}
+    )
+
+    plt.title("Claims Rate by Store and Product")
+    plt.xlabel("Product")
+    plt.ylabel("Store")
+    plt.tight_layout()
+    plt.show
+claims_product_store = load_Claims_Rate_Products_Store(sort_order = 'DESC')
+plot_top_10_claims_heatmap(claims_product_store)
+#%%
+# Testing
+if __name__ =='__main__':
+    None

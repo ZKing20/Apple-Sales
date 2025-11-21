@@ -268,6 +268,46 @@ def load_Claims_Rate_Store(sort_order: str = 'DESC'):
     """).fetchdf()
     return df
 
+#%%
+# Claims Rate by Product and Store
+# Claims Rate by Store
+def load_Claims_Rate_Products_Store(sort_order: str = 'ASC'):
+    df = con.execute(f"""
+        WITH Claims_Rate AS (
+        SELECT
+            st.Store_ID,
+            st.Store_Name,
+            p.product_ID,
+            p.product_Name,
+            COUNT(w.claim_id) AS Claims_Count,
+            CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate
+        FROM
+            stores st
+        LEFT JOIN sales s ON st.Store_ID = s.store_id
+        LEFT JOIN products p ON s.product_id = p.Product_ID
+        LEFT JOIN warranty w ON s.sale_id = w.sale_id
+        GROUP BY
+            st.Store_ID,
+            st.Store_Name,
+            p.Product_ID,
+            p.Product_Name
+        )
+        SELECT
+            cr.Store_ID,
+            cr.Store_Name,
+            cr.Product_ID,
+            cr.Product_Name,
+            cr.Claims_Count,
+            cr.Claims_Rate, 
+            st.Country
+        FROM
+            Claims_Rate cr
+        JOIN stores st ON cr.Store_ID = st.Store_ID
+        ORDER BY 
+            cr.Claims_Rate {sort_order}
+    """).fetchdf()
+    return df
+
 # %%
 # Revenue by Category
 def load_category_revenue_by_year():
