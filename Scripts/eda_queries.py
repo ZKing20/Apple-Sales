@@ -20,14 +20,14 @@ from db_connections import get_connection
 con = get_connection()
 
 # %%
-# Top/Bottom Products by Revenue
+# Top/Bottom Products by Revenue (Used)
 def load_products_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT 
-        p.Product_Name,
-        c.category_name,
-        SUM(s.quantity * p.Price) as Total_Revenue,
-        COUNT(*) as Units_Sold
+            p.Product_Name,
+            c.category_name,
+            SUM(s.quantity * p.Price) as Total_Revenue,
+            COUNT(*) as Units_Sold
         FROM sales s
         JOIN products p ON s.product_id = p.Product_ID
         JOIN category c ON p.Category_ID = c.category_id
@@ -108,7 +108,7 @@ def load_countries_revenue(limit: int=10, sort_order: str = 'DESC'):
     return df
 # %%
 # Most/Least Warranty Claims
-def load_warranty_claims(limit: int=10,sort_order: str = 'DESC'):
+def load_warranty_claims(limit: int=10, sort_order: str = 'DESC'):
     df = con.execute(f"""
         WITH Completed_Claims AS (
             SELECT 
@@ -139,70 +139,104 @@ def load_warranty_claims(limit: int=10,sort_order: str = 'DESC'):
             JOIN stores st ON st.Store_ID = s.store_id
             WHERE w.repair_status = 'In Progress'
             GROUP BY st.Country                
+        ),
+        Rejected_Claims AS (
+            SELECT 
+                COUNT(w.claim_id) AS Rejected_Claims,
+                st.Country
+            FROM warranty w
+            JOIN sales s ON s.sale_id = w.sale_id
+            JOIN stores st ON st.Store_ID = s.store_id
+            WHERE w.repair_status = 'Rejected'
+            GROUP BY st.Country                
         )
         SELECT
             COALESCE(cc.Country, pc.Country, ip.Country) as Country,
             COALESCE(cc.Completed_Claims, 0) AS Completed_Claims,
             COALESCE(pc.Pending_Claims, 0) AS Pending_Claims,
             COALESCE(ip.IP_Claims, 0) AS In_Progress_Claims,
-            (COALESCE(cc.Completed_Claims, 0) + COALESCE(pc.Pending_Claims, 0) + COALESCE(ip.IP_Claims, 0)) AS Total_Claims
+            COALESCE(r.Rejected_Claims, 0) AS Rejected_Claims,
+            (COALESCE(cc.Completed_Claims, 0) + COALESCE(pc.Pending_Claims, 0) + COALESCE(ip.IP_Claims, 0) + COALESCE(r.Rejected_Claims, 0)) AS Total_Claims
         FROM
             Completed_Claims cc
         FULL JOIN
             Pending_Claims pc USING (Country)
         FULL JOIN
-        IP_Claims ip USING (Country)
+            IP_Claims ip USING (Country)
+        FULL JOIN
+            Rejected_Claims r USING (Country)
         ORDER BY 
             Total_Claims {sort_order}
         LIMIT {limit}
     """).fetchdf()
     return df
 # %%
-# Top/Bottom Country Revenue
-def load_Country_Monthly_Revenue(sort_order: str = 'DESC'):
+# Top/Bottom Country Revenue (Used)
+def load_Country_Monthly_Revenue(limit:int, sort_order: str):
     df = con.execute(f"""
+        WITH country_totals AS (
+            SELECT
+                st.Country,
+                SUM(s.quantity * p.Price) AS Total_Revenue
+            FROM
+                sales s
+            JOIN products p ON s.product_id = p.Product_ID
+            JOIN stores st ON s.store_id = st.Store_ID
+            GROUP BY st.Country
+            ORDER BY Total_Revenue {sort_order}
+            LIMIT {limit}
+        )
         SELECT
-            st.Country,
+            ct.Country,
             SUM(s.quantity * p.Price) AS Monthly_Revenue,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS Year,
-            EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS Month
+            strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
         FROM
             sales s
         JOIN products p ON s.product_id = p.Product_ID
         JOIN stores st ON s.store_id = st.Store_ID
+        JOIN country_totals ct ON st.Country = ct.Country
         GROUP BY
-            st.Country,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
-            EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
-        ORDER BY
-            Monthly_Revenue {sort_order},                              
-            Year,
-            Month
+            ct.Country,
+            Year_Month
+        ORDER BY                             
+            Year_Month
     """).fetchdf()
     return df
 # %%
-# Top/Bottom Store Revenue
-def load_Stores_Monthly_Revenue(sort_order: str = 'DESC'):
+# Top/Bottom Store Revenue (Used)
+def load_Stores_Monthly_Revenue(limit: int, sort_order: str):
     df = con.execute(f"""
+        WITH store_totals AS (
+            SELECT
+                st.Store_ID,
+                st.Store_Name,
+                SUM(s.quantity * p.Price) AS Total_Revenue
+            FROM
+                sales s
+            JOIN products p ON s.product_id = p.Product_ID
+            JOIN stores st ON s.store_id = st.Store_ID
+            GROUP BY 
+                st.Store_ID,
+                st.Store_Name
+            ORDER BY Total_Revenue {sort_order}
+            LIMIT {limit}         
+        )
         SELECT
-            st.Store_ID,
-            st.Store_Name,
+            stt.Store_ID,
+            stt.Store_Name,
             SUM(s.quantity * p.Price) AS Monthly_Revenue,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS Year,
-            EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS Month
+            strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
         FROM
             sales s
         JOIN products p ON s.product_id = p.Product_ID
         JOIN stores st ON s.store_id = st.Store_ID
+        JOIN store_totals stt ON st.Store_ID = stt.Store_ID
         GROUP BY
-            st.Store_ID,
-            st.Store_Name,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
-            EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
-        ORDER BY
-            Monthly_Revenue {sort_order},                              
-            Year,
-            Month
+            stt.Store_ID,
+            stt.Store_Name,
+            Year_Month
+        ORDER BY                              
+            Year_Month
         """).fetchdf()
     return df
 # %%
@@ -266,8 +300,35 @@ def load_Claims_Rate_Store(sort_order: str = 'DESC'):
     return df
 
 #%%
-# Claims Rate by Product and Store
-# Claims Rate by Store
+# Claims Rate by Revenue and Store (Used)
+def load_claims_vs_revenue_by_store(sort_order: str):
+    df = con.execute(f"""
+        SELECT
+            st.Store_ID,
+            st.Store_Name,
+            st.Country,
+            SUM(s.quantity * p.Price) AS Total_Revenue,
+            SUM(s.quantity) AS Units_Sold,
+            COUNT(w.claim_id) AS Claims_Count
+        FROM
+            stores st
+        LEFT JOIN
+            sales s ON st.Store_ID = s.store_id
+        LEFT JOIN
+            products p ON s.product_id = p.Product_ID
+        LEFT JOIN
+            warranty w ON s.sale_id = w.sale_id
+        GROUP BY
+            st.Store_ID,
+            st.Store_Name,
+            st.Country
+        ORDER BY 
+            Claims_Count {sort_order}                 
+    """).fetchdf()
+    return df
+
+#%%
+# Claims Rate by Product and Store (Used)
 def load_Claims_Rate_Products_Store(sort_order: str = 'ASC'):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -306,7 +367,7 @@ def load_Claims_Rate_Products_Store(sort_order: str = 'ASC'):
     return df
 
 # %%
-# Revenue by Category
+# Revenue by Category (Used)
 def load_category_revenue_by_year():
     df = con.execute("""
         SELECT
@@ -326,15 +387,14 @@ def load_category_revenue_by_year():
     return df
 
 # %%
-# Monthly Claims vs. Revenue by Store
+# Monthly Claims vs. Revenue by Store (Used)
 def load_monthly_claims_revenue_by_store():
     df = con.execute("""
         SELECT
             st.Store_ID,
             st.Store_Name,
             st.Country,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS year,
-            EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y')) AS month,
+            strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
             SUM(s.quantity * p.price) AS revenue,
             SUM(s.quantity) AS units_sold,
             COUNT(w.claim_id) AS claim_count
@@ -342,12 +402,13 @@ def load_monthly_claims_revenue_by_store():
         JOIN products p ON s.product_id = p.Product_ID
         JOIN stores st ON s.store_id = st.Store_ID
         LEFT JOIN warranty w ON s.sale_id = w.sale_id
-        GROUP BY st.Store_ID, st.Store_Name, st.Country,
-                EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')),
-                EXTRACT(MONTH FROM strptime(s.sale_date, '%d-%m-%Y'))
+        GROUP BY 
+            st.Store_ID,
+            st.Store_Name,
+            st.Country,
+            Year_Month    
         ORDER BY 
             st.Store_ID,
-            year,
-            month
+            Year_Month
     """).fetchdf()
     return df
