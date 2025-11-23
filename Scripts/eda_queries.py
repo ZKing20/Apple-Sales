@@ -20,7 +20,7 @@ from db_connections import get_connection
 con = get_connection()
 
 # %%
-# Top/Bottom Products by Revenue (Used)
+# (1) Top N Products by Revenue
 def load_products_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT 
@@ -43,8 +43,9 @@ def load_products_revenue(limit: int, sort_order: str):
         LIMIT {limit}
     """).fetchdf()
     return df
+
 # %%
-# Top/Bottom Country Revenue (Used)
+# (2) Top N Countries by Monthly Revenue
 def load_country_monthly_revenue(limit:int, sort_order: str):
     df = con.execute(f"""
         WITH country_totals AS (
@@ -82,8 +83,32 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
             Year_Month
     """).fetchdf()
     return df
+
 # %%
-# Top/Bottom Store Revenue (Used)
+# (3) Revenue by Category
+def load_category_revenue_by_year():
+    df = con.execute("""
+        SELECT
+            c.category_name,
+            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS year,
+            SUM(s.quantity * p.price) AS revenue
+        FROM 
+            sales s
+        JOIN 
+            products p ON s.product_id = p.Product_ID
+        JOIN 
+            category c ON p.Category_ID = c.category_id
+        GROUP BY 
+            c.category_name, 
+            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y'))
+        ORDER BY
+            c.category_name,
+            year;            
+    """).fetchdf()
+    return df
+
+# %%
+# (3.5) Top N Stores by Monthly Revenue
 def load_stores_monthly_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH store_totals AS (
@@ -124,8 +149,41 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
             Year_Month
         """).fetchdf()
     return df
+
+#%%
+
+# Missing (4) 
+
+#%%
+# (5) Claims Rate by Revenue and Store
+def load_claims_vs_revenue_by_store(sort_order: str):
+    df = con.execute(f"""
+        SELECT
+            st.Store_ID,
+            st.Store_Name,
+            st.Country,
+            SUM(s.quantity * p.Price) AS Total_Revenue,
+            SUM(s.quantity) AS Units_Sold,
+            COUNT(w.claim_id) AS Claims_Count
+        FROM
+            stores st
+        LEFT JOIN
+            sales s ON st.Store_ID = s.store_id
+        LEFT JOIN
+            products p ON s.product_id = p.Product_ID
+        LEFT JOIN
+            warranty w ON s.sale_id = w.sale_id
+        GROUP BY
+            st.Store_ID,
+            st.Store_Name,
+            st.Country
+        ORDER BY 
+            Claims_Count {sort_order}                 
+    """).fetchdf()
+    return df
+
 # %%
-# Claims Rate by Product (Used)
+# (6) Claims Rate by Product
 def load_claims_rate_product(limit: int, sort_order: str = 'DESC'):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -159,36 +217,9 @@ def load_claims_rate_product(limit: int, sort_order: str = 'DESC'):
         LIMIT {limit}
     """).fetchdf()
     return df
-#%%
-# Claims Rate by Revenue and Store (Used)
-def load_claims_vs_revenue_by_store(sort_order: str):
-    df = con.execute(f"""
-        SELECT
-            st.Store_ID,
-            st.Store_Name,
-            st.Country,
-            SUM(s.quantity * p.Price) AS Total_Revenue,
-            SUM(s.quantity) AS Units_Sold,
-            COUNT(w.claim_id) AS Claims_Count
-        FROM
-            stores st
-        LEFT JOIN
-            sales s ON st.Store_ID = s.store_id
-        LEFT JOIN
-            products p ON s.product_id = p.Product_ID
-        LEFT JOIN
-            warranty w ON s.sale_id = w.sale_id
-        GROUP BY
-            st.Store_ID,
-            st.Store_Name,
-            st.Country
-        ORDER BY 
-            Claims_Count {sort_order}                 
-    """).fetchdf()
-    return df
 
 #%%
-# Claims Rate by Product and Store (Used)
+#  (7) Claims Rate by Product and Store
 def load_claims_rate_products_store(sort_order: str = 'ASC'):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -230,30 +261,7 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
     return df
 
 # %%
-# Revenue by Category (Used)
-def load_category_revenue_by_year():
-    df = con.execute("""
-        SELECT
-            c.category_name,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS year,
-            SUM(s.quantity * p.price) AS revenue
-        FROM 
-            sales s
-        JOIN 
-            products p ON s.product_id = p.Product_ID
-        JOIN 
-            category c ON p.Category_ID = c.category_id
-        GROUP BY 
-            c.category_name, 
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y'))
-        ORDER BY
-            c.category_name,
-            year;            
-    """).fetchdf()
-    return df
-
-# %%
-# Monthly Claims vs. Revenue by Store (Used)
+# (8) Monthly Claims vs. Revenue by Store
 def load_monthly_claims_revenue_by_store():
     df = con.execute("""
         SELECT
