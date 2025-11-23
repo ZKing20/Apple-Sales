@@ -110,7 +110,7 @@ plot_category_revenue_by_year(category_revenue)
 
 #%%
 # (3.5) Line Graph: Top N Stores by Monthly Revenue
-limit = 5
+limit = 10
 sort_order = 'DESC'
 def plot_top_stores_monthly_revenue(top_stores_data):
     plt.figure(figsize=(20,10))
@@ -120,6 +120,20 @@ def plot_top_stores_monthly_revenue(top_stores_data):
         y='Monthly_Revenue',
         hue = 'Store_Name',
         marker = 'o'
+    )
+    plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
+    plt.xlabel('Year-Month')
+    plt.ylabel('Monthly Revenue')
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(True)
+    plt.show()
+
+    plt.figure(figsize=(20,10))
+    sns.barplot(
+        data=top_stores_data,
+        x='Year_Month',
+        y='Monthly_Revenue',
+        hue = 'Store_Name',
     )
     plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
     plt.xlabel('Year-Month')
@@ -139,6 +153,7 @@ plot_top_stores_monthly_revenue(top_stores_data)
 
 # %%
 # (5) Bar Chart: Claims Rate vs. Revenue
+limit = 10
 sort_order = 'DESC'
 
 def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
@@ -167,7 +182,7 @@ def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
     plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
-claims_rate_store_revenue = load_claims_vs_revenue_by_store(sort_order)
+claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
 plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
 # %%

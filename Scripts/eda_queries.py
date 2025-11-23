@@ -156,7 +156,7 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
 
 #%%
 # (5) Claims Rate by Revenue and Store
-def load_claims_vs_revenue_by_store(sort_order: str):
+def load_claims_vs_revenue_by_store( limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT
             st.Store_ID,
@@ -178,7 +178,8 @@ def load_claims_vs_revenue_by_store(sort_order: str):
             st.Store_Name,
             st.Country
         ORDER BY 
-            Claims_Count {sort_order}                 
+            Claims_Count {sort_order}
+        LIMIT {limit}         
     """).fetchdf()
     return df
 
