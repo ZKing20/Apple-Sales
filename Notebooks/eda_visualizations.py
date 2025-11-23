@@ -49,6 +49,31 @@ top_products_revenue = load_products_revenue(limit, sort_order)
 plot_top_products_revenue(top_products_revenue)
 
 # %%
+# Bar Chart: Claims Rate by Product
+limit = 60
+sort_order = 'DESC'
+
+def plot_claims_rate_by_product(claims_rate_product):
+    plt.figure(figsize=(20,10))
+    sns.barplot(
+        data = claims_rate_product,
+        x = 'Product_Name',
+        y = 'Claims_Rate',
+        hue = 'category_name',
+        errorbar = None,
+        dodge = False,
+        palette = 'tab10'
+    )
+    plt.title(f'Top {limit} Products by Claims Rate')
+    plt.xlabel('Product Name')
+    plt.ylabel('Claims Rate')
+    plt.xticks(rotation = 45, ha = 'right')
+    plt.show()
+
+claims_rate_product = load_claims_rate_product(limit, sort_order)
+plot_claims_rate_by_product(claims_rate_product)
+
+# %%
 # Bar Chart: Claims Rate vs. Revenue
 sort_order = 'DESC'
 
@@ -137,7 +162,7 @@ def plot_top_country_monthly_revenue(top_country_data):
     plt.grid(True)
     plt.show()
 
-top_country_data = load_Country_Monthly_Revenue(limit, sort_order)
+top_country_data = load_country_monthly_revenue(limit, sort_order)
 plot_top_country_monthly_revenue(top_country_data)
 
 # %%
@@ -161,7 +186,7 @@ def plot_top_stores_monthly_revenue(top_stores_data):
     plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
-top_stores_data = load_Stores_Monthly_Revenue(limit, sort_order)
+top_stores_data = load_stores_monthly_revenue(limit, sort_order)
 plot_top_stores_monthly_revenue(top_stores_data)
 
 #%%
@@ -243,7 +268,7 @@ def plot_top_10_claims_heatmap(claims_product_store):
     plt.ylabel("Store")
     plt.tight_layout()
     plt.show
-claims_product_store = load_Claims_Rate_Products_Store(sort_order = 'DESC')
+claims_product_store = load_claims_rate_products_store(sort_order = 'DESC')
 plot_top_10_claims_heatmap(claims_product_store)
 #%%
 # Testing
