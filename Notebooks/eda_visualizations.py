@@ -68,6 +68,7 @@ def plot_top_country_monthly_revenue(top_country_data):
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True)
     plt.show()
 
@@ -75,7 +76,7 @@ top_country_data = load_country_monthly_revenue(limit, sort_order)
 plot_top_country_monthly_revenue(top_country_data)
 
 #%%
-# (3) Horizontal Bar Chart: Revenue by Product Type
+# (3) Horizontal Bar Chart: Revenue by Category
 def plot_category_revenue_by_year(category_revenue):
     
     # Pivot so each category is a row and each year is a column
@@ -125,6 +126,7 @@ def plot_top_stores_monthly_revenue(top_stores_data):
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True)
     plt.show()
 
@@ -139,6 +141,7 @@ def plot_top_stores_monthly_revenue(top_stores_data):
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True)
     plt.show()
 
@@ -149,8 +152,9 @@ plot_top_stores_monthly_revenue(top_stores_data)
 # Warranty and Product Quality
 
 #%%
-# (4) Bar Chart: Claims Rate by Country
-limit = 20
+# (4) Bar Chart: Claims Rate by Country 
+# (BROKEN--only returning 19 countries no matter what the limit is)
+limit = 50
 sort_order = 'DESC'
 
 def plot_claims_rate_by_country(claims_rate_country):
@@ -222,6 +226,7 @@ def plot_claims_rate_by_product(claims_rate_product):
     plt.xlabel('Product Name')
     plt.ylabel('Claims Rate')
     plt.xticks(rotation = 45, ha = 'right')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
 claims_rate_product = load_claims_rate_product(limit, sort_order)
@@ -302,7 +307,7 @@ def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
         x='revenue',
         y='Claims_Per_1000',
         size='units_sold',
-        sizes=(20,300),
+        sizes=(20, 300),
         hue='Country'
     )
     plt.xlabel('Total Revenue')
@@ -316,5 +321,23 @@ plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
 
 #%%
 # Testing
-if __name__ =='__main__':
-    None
+# Potential new scatterplot for (8)
+if __name__ == '__main__':
+    def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
+        plt.figure(figsize=(20,10))
+        sns.scatterplot(
+            data=monthly_claims_revenue_by_store,
+            x='revenue',
+            y='claims_per_thousand',
+            size='units_sold',
+            sizes=(20, 300),
+            hue='Country'
+        )
+        plt.xlabel('Total Revenue')
+        plt.ylabel('Claims per $1000')
+        plt.title('Claims per $1000 vs Revenue by Store')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.show()
+
+monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)

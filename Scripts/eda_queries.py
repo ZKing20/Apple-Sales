@@ -153,10 +153,11 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
 #%%
 
 # (4) Claims Rate by Country
+# (BROKEN--only returning 19 countries no matter what the limit is)
 def load_claims_rate_country(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT 
-            CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate,
+            CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate, --This is the likely culprit, most countries probably returnin 0 for some reason
             st.Country
         FROM
             warranty w
@@ -290,7 +291,8 @@ def load_monthly_claims_revenue_by_store():
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
             SUM(s.quantity * p.price) AS revenue,
             SUM(s.quantity) AS units_sold,
-            COUNT(w.claim_id) AS claim_count
+            COUNT(w.claim_id) AS claim_count,
+            1000 * claim_count / revenue AS claims_per_thousand
         FROM 
             sales s
         JOIN 
@@ -305,6 +307,7 @@ def load_monthly_claims_revenue_by_store():
             st.Country,
             Year_Month    
         ORDER BY 
+            claims_per_thousand,
             st.Store_ID,
             Year_Month
     """).fetchdf()
