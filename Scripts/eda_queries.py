@@ -152,7 +152,25 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
 
 #%%
 
-# Missing (4) 
+# (4) Claims Rate by Country
+def load_claims_rate_country(limit: int, sort_order: str):
+    df = con.execute(f"""
+        SELECT 
+            CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate,
+            st.Country
+        FROM
+            warranty w
+        JOIN
+            sales s ON w.sale_id = s.sale_id
+        JOIN
+            stores st ON s.store_id = st.Store_ID
+        GROUP BY
+            st.Country
+        ORDER BY
+            Claims_Rate {sort_order}
+        LIMIT {limit}
+    """).fetchdf()
+    return df
 
 #%%
 # (5) Claims Rate by Revenue and Store

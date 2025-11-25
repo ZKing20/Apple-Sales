@@ -149,8 +149,25 @@ plot_top_stores_monthly_revenue(top_stores_data)
 # Warranty and Product Quality
 
 #%%
-# (4) Missing query that counts claims by country
+# (4) Bar Chart: Claims Rate by Country
+limit = 20
+sort_order = 'DESC'
 
+def plot_claims_rate_by_country(claims_rate_country):
+    plt.figure(figsize=(20,10))
+    sns.barplot(
+        data=claims_rate_country,
+        x='Country',
+        y='Claims_Rate'
+    )
+    plt.title('Claims Rate by Country')
+    plt.xlabel('Country')
+    plt.ylabel('Claims Rate')
+    plt.xticks(rotation=45, ha='right')
+    plt.show()    
+
+claims_rate_country = load_claims_rate_country(limit, sort_order)
+plot_claims_rate_by_country(claims_rate_country)
 # %%
 # (5) Bar Chart: Claims Rate vs. Revenue
 limit = 10
