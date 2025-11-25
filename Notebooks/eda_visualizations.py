@@ -321,8 +321,8 @@ plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
 
 #%%
 # Testing
-# Potential new scatterplot for (8)
 if __name__ == '__main__':
+# Potential new scatterplot for (8)    
     def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
         sns.scatterplot(
@@ -339,5 +339,33 @@ if __name__ == '__main__':
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.show()
 
-monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
-plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
+    monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+    plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
+
+# Trying to rewrite (3) to not have to rely on pivoting with python
+    sort_order = 'ASC'
+    def plot_category_revenue_by_year(category_revenue):
+        # Drop the Total_Revenue column so it's not included in the bar
+        if "Total_Revenue" in category_revenue.columns:
+            category_revenue = category_revenue.drop(columns = ["Total_Revenue"])
+        
+        #Set category names as index so they're used for y-axis
+        category_revenue = category_revenue.set_index("category_name")
+        
+        # Plot
+        category_revenue.plot(
+        kind='barh',
+        stacked=True,
+        figsize=(20,10)
+        )
+
+        plt.title('Revenue of Products by Category', fontsize=20, pad=20)
+        plt.xlabel('Total Revenue', fontsize=18)
+        plt.ylabel('Category', fontsize=18)
+        plt.grid(axis='x')
+        plt.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.tight_layout()
+        plt.show()
+
+    category_revenue = load_category_revenue_by_year(sort_order)
+    plot_category_revenue_by_year(category_revenue)

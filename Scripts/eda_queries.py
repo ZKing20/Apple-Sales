@@ -86,24 +86,53 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
 
 # %%
 # (3) Revenue by Category
-def load_category_revenue_by_year():
-    df = con.execute("""
+def load_category_revenue_by_year(sort_order: str):
+    df = con.execute(f"""
+        WITH yearly AS (
+            SELECT
+                c.category_name,
+                SUM(
+                    CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2020
+                    THEN s.quantity * p.price ELSE 0 END
+                ) AS revenue_2020,
+                SUM(
+                    CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2021
+                    THEN s.quantity * p.price ELSE 0 END
+                ) AS revenue_2021,
+                SUM(
+                    CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2022
+                    THEN s.quantity * p.price ELSE 0 END
+                ) AS revenue_2022,
+                SUM(
+                    CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2023
+                    THEN s.quantity * p.price ELSE 0 END
+                ) AS revenue_2023,
+                SUM(
+                    CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2024
+                    THEN s.quantity * p.price ELSE 0 END
+                ) AS revenue_2024
+            FROM
+                sales s
+            JOIN 
+                products p ON s.product_id = p.Product_ID
+            JOIN
+                category c ON p.Category_ID = c.category_id
+            GROUP BY
+                c.category_name
+            )
         SELECT
-            c.category_name,
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) AS year,
-            SUM(s.quantity * p.price) AS revenue
+            category_name,
+            revenue_2020,
+            revenue_2021,
+            revenue_2022,
+            revenue_2023,
+            revenue_2024,
+            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024)
+                AS Total_Revenue
         FROM 
-            sales s
-        JOIN 
-            products p ON s.product_id = p.Product_ID
-        JOIN 
-            category c ON p.Category_ID = c.category_id
-        GROUP BY 
-            c.category_name, 
-            EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y'))
+            yearly
         ORDER BY
-            c.category_name,
-            year;            
+            Total_Revenue {sort_order};           
     """).fetchdf()
     return df
 
