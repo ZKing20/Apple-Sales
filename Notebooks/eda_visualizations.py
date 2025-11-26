@@ -77,20 +77,15 @@ plot_top_country_monthly_revenue(top_country_data)
 
 #%%
 # (3) Horizontal Bar Chart: Revenue by Category
+sort_order = 'ASC'
 def plot_category_revenue_by_year(category_revenue):
+    # Drop the Total_Revenue column so it's not included in the bar
+    if "Total_Revenue" in category_revenue.columns:
+        category_revenue = category_revenue.drop(columns = ["Total_Revenue"])
     
-    # Pivot so each category is a row and each year is a column
-    category_revenue = (
-        category_revenue
-        .pivot(index='category_name', columns='year', values='revenue')
-        .fillna(0)
-    )
-
-    # Compute total revenue per category to sort by total
-    category_revenue['Total_Revenue'] = category_revenue.sum(axis=1)
-    category_revenue = category_revenue.sort_values('Total_Revenue', ascending=True)
-    category_revenue = category_revenue.drop(columns=['Total_Revenue'])
-
+    #Set category names as index so they're used for y-axis
+    category_revenue = category_revenue.set_index("category_name")
+    
     # Plot
     category_revenue.plot(
     kind='barh',
@@ -106,7 +101,7 @@ def plot_category_revenue_by_year(category_revenue):
     plt.tight_layout()
     plt.show()
 
-category_revenue = load_category_revenue_by_year()
+category_revenue = load_category_revenue_by_year(sort_order)
 plot_category_revenue_by_year(category_revenue)
 
 #%%
@@ -153,8 +148,7 @@ plot_top_stores_monthly_revenue(top_stores_data)
 
 #%%
 # (4) Bar Chart: Claims Rate by Country 
-# (BROKEN--only returning 19 countries no matter what the limit is)
-limit = 50
+limit = 19 # Only have 19 countries
 sort_order = 'DESC'
 
 def plot_claims_rate_by_country(claims_rate_country):
@@ -162,16 +156,19 @@ def plot_claims_rate_by_country(claims_rate_country):
     sns.barplot(
         data=claims_rate_country,
         x='Country',
-        y='Claims_Rate'
+        y='Claims_Rate',
+        hue='Region'
     )
     plt.title('Claims Rate by Country')
     plt.xlabel('Country')
     plt.ylabel('Claims Rate')
     plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()    
 
 claims_rate_country = load_claims_rate_country(limit, sort_order)
 plot_claims_rate_by_country(claims_rate_country)
+
 # %%
 # (5) Bar Chart: Claims Rate vs. Revenue
 limit = 10
@@ -191,16 +188,16 @@ def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
         data=claims_rate_store_revenue,
         x='Store_Name',
         y='Claims_Per_1000',
-        hue='Country',
+        hue='Region',
         errorbar=None,
         dodge=False,
-        palette='tab20'
+        palette='tab10'
     )
     plt.title('Claims per $1000 by Store')
     plt.xlabel('Store Name')
     plt.ylabel('Claims Per $1000')
     plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
 claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
@@ -208,7 +205,7 @@ plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
 # %%
 # (6) Bar Chart: Claims Rate by Product
-limit = 60
+limit = 80
 sort_order = 'DESC'
 
 def plot_claims_rate_by_product(claims_rate_product):
@@ -285,45 +282,7 @@ plot_top_10_claims_heatmap(claims_product_store)
 
 # %%
 # (8) Scatterplot: Claims Rate vs. Total Revenue
-def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
-    # Aggregate by store
-    monthly_claims_revenue_by_store = (
-        monthly_claims_revenue_by_store.groupby(['Store_ID', 'Store_Name', 'Country'], as_index = False)
-        .agg({
-            'revenue': 'sum',
-            'claim_count': 'sum',
-            'units_sold': 'sum'
-        })
-    )
-    # Compute claims per $1000 revenue
-    monthly_claims_revenue_by_store['Claims_Per_1000'] = monthly_claims_revenue_by_store.apply(
-        lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0,
-        axis = 1
-    )
-    # Plot the scatterplot
-    plt.figure(figsize=(20,10))
-    sns.scatterplot(
-        data=monthly_claims_revenue_by_store,
-        x='revenue',
-        y='Claims_Per_1000',
-        size='units_sold',
-        sizes=(20, 300),
-        hue='Country'
-    )
-    plt.xlabel('Total Revenue')
-    plt.ylabel('Claims per $1000')
-    plt.title('Claims per $1000 vs Revenue by Store')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.show()
-
-monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
-plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
-
-#%%
-# Testing
-if __name__ == '__main__':
-# Potential new scatterplot for (8)    
-    def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
+def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
         sns.scatterplot(
             data=monthly_claims_revenue_by_store,
@@ -339,33 +298,43 @@ if __name__ == '__main__':
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.show()
 
-    monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
-    plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
+monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
 
-# Trying to rewrite (3) to not have to rely on pivoting with python
-    sort_order = 'ASC'
-    def plot_category_revenue_by_year(category_revenue):
-        # Drop the Total_Revenue column so it's not included in the bar
-        if "Total_Revenue" in category_revenue.columns:
-            category_revenue = category_revenue.drop(columns = ["Total_Revenue"])
-        
-        #Set category names as index so they're used for y-axis
-        category_revenue = category_revenue.set_index("category_name")
-        
-        # Plot
-        category_revenue.plot(
-        kind='barh',
-        stacked=True,
-        figsize=(20,10)
+#%%
+# Testing
+if __name__ == '__main__':
+# Old version of (8)--Not sure if I want to fully change it yet
+    def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
+        # Aggregate by store
+        monthly_claims_revenue_by_store = (
+            monthly_claims_revenue_by_store.groupby(['Store_ID', 'Store_Name', 'Country'], as_index = False)
+            .agg({
+                'revenue': 'sum',
+                'claim_count': 'sum',
+                'units_sold': 'sum'
+            })
         )
-
-        plt.title('Revenue of Products by Category', fontsize=20, pad=20)
-        plt.xlabel('Total Revenue', fontsize=18)
-        plt.ylabel('Category', fontsize=18)
-        plt.grid(axis='x')
-        plt.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
-        plt.tight_layout()
+        # Compute claims per $1000 revenue
+        monthly_claims_revenue_by_store['Claims_Per_1000'] = monthly_claims_revenue_by_store.apply(
+            lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0,
+            axis = 1
+        )
+        # Plot the scatterplot
+        plt.figure(figsize=(20,10))
+        sns.scatterplot(
+            data=monthly_claims_revenue_by_store,
+            x='revenue',
+            y='Claims_Per_1000',
+            size='units_sold',
+            sizes=(20, 300),
+            hue='Country'
+        )
+        plt.xlabel('Total Revenue')
+        plt.ylabel('Claims per $1000')
+        plt.title('Claims per $1000 vs Revenue by Store')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.show()
 
-    category_revenue = load_category_revenue_by_year(sort_order)
-    plot_category_revenue_by_year(category_revenue)
+    monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+    plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)

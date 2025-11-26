@@ -182,11 +182,11 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
 #%%
 
 # (4) Claims Rate by Country
-# (BROKEN--only returning 19 countries no matter what the limit is)
 def load_claims_rate_country(limit: int, sort_order: str):
     df = con.execute(f"""
-        SELECT 
-            CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate, --This is the likely culprit, most countries probably returnin 0 for some reason
+        SELECT
+            CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(4,2)) AS Claims_Rate,
+            st.Region,
             st.Country
         FROM
             warranty w
@@ -195,6 +195,7 @@ def load_claims_rate_country(limit: int, sort_order: str):
         JOIN
             stores st ON s.store_id = st.Store_ID
         GROUP BY
+            st.Region,
             st.Country
         ORDER BY
             Claims_Rate {sort_order}
@@ -204,12 +205,13 @@ def load_claims_rate_country(limit: int, sort_order: str):
 
 #%%
 # (5) Claims Rate by Revenue and Store
-def load_claims_vs_revenue_by_store( limit: int, sort_order: str):
+def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT
             st.Store_ID,
             st.Store_Name,
             st.Country,
+            st.Region,
             SUM(s.quantity * p.Price) AS Total_Revenue,
             SUM(s.quantity) AS Units_Sold,
             COUNT(w.claim_id) AS Claims_Count
@@ -224,6 +226,7 @@ def load_claims_vs_revenue_by_store( limit: int, sort_order: str):
         GROUP BY
             st.Store_ID,
             st.Store_Name,
+            st.Region,
             st.Country
         ORDER BY 
             Claims_Count {sort_order}
@@ -233,7 +236,7 @@ def load_claims_vs_revenue_by_store( limit: int, sort_order: str):
 
 # %%
 # (6) Claims Rate by Product
-def load_claims_rate_product(limit: int, sort_order: str = 'DESC'):
+def load_claims_rate_product(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH Claims_Rate AS (
         SELECT
