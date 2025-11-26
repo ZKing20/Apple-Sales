@@ -40,12 +40,14 @@ def plot_top_products_revenue(top_products_revenue):
     sns.barplot(
         data = top_products_revenue,
         x = 'Product_Name',
-        y = 'Total_Revenue'
+        y = 'Total_Revenue',
+        hue = 'category_name'
     )
     plt.title(f'Top {limit} Products by Revenue')
     plt.xlabel('Product Name')
     plt.ylabel('Total Revenue')
     plt.xticks(rotation = 45, ha = 'right')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
 top_products_revenue = load_products_revenue(limit, sort_order)
