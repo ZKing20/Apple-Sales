@@ -320,6 +320,7 @@ def load_monthly_claims_revenue_by_store():
             st.Store_ID,
             st.Store_Name,
             st.Country,
+            st.Region,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
             SUM(s.quantity * p.price) AS revenue,
             SUM(s.quantity) AS units_sold,
@@ -337,6 +338,7 @@ def load_monthly_claims_revenue_by_store():
             st.Store_ID,
             st.Store_Name,
             st.Country,
+            st.Region,
             Year_Month    
         ORDER BY 
             claims_per_thousand,

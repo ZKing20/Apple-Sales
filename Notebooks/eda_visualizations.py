@@ -292,7 +292,7 @@ def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
             y='claims_per_thousand',
             size='units_sold',
             sizes=(20, 300),
-            hue='Country'
+            hue='Region'
         )
         plt.xlabel('Total Revenue')
         plt.ylabel('Claims per $1000')
