@@ -107,8 +107,8 @@ category_revenue = load_category_revenue_by_year(sort_order)
 plot_category_revenue_by_year(category_revenue)
 
 #%%
-# (3.5) Line Graph: Top N Stores by Monthly Revenue
-limit = 10
+# (3.5) Line Graph: Top N Regions and Stores by Monthly Revenue
+limit = 20
 sort_order = 'DESC'
 def plot_top_stores_monthly_revenue(top_stores_data):
     plt.figure(figsize=(20,10))
@@ -116,8 +116,9 @@ def plot_top_stores_monthly_revenue(top_stores_data):
         data=top_stores_data,
         x='Year_Month',
         y='Monthly_Revenue',
-        hue = 'Store_Name',
-        marker = 'o'
+        hue = 'Region',
+        marker = 'o',
+        errorbar = None
     )
     plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
     plt.xlabel('Year-Month')
@@ -128,11 +129,12 @@ def plot_top_stores_monthly_revenue(top_stores_data):
     plt.show()
 
     plt.figure(figsize=(20,10))
-    sns.barplot(
+    sns.lineplot(
         data=top_stores_data,
         x='Year_Month',
         y='Monthly_Revenue',
         hue = 'Store_Name',
+        marker = 'o'
     )
     plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
     plt.xlabel('Year-Month')

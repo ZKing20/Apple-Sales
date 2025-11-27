@@ -144,6 +144,7 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
             SELECT
                 st.Store_ID,
                 st.Store_Name,
+                st.Region,
                 SUM(s.quantity * p.Price) AS Total_Revenue
             FROM
                 sales s
@@ -153,13 +154,15 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
                 stores st ON s.store_id = st.Store_ID
             GROUP BY 
                 st.Store_ID,
-                st.Store_Name
+                st.Store_Name,
+                st.Region
             ORDER BY Total_Revenue {sort_order}
             LIMIT {limit}         
         )
         SELECT
             stt.Store_ID,
             stt.Store_Name,
+            stt.Region,
             SUM(s.quantity * p.Price) AS Monthly_Revenue,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
         FROM
@@ -173,6 +176,7 @@ def load_stores_monthly_revenue(limit: int, sort_order: str):
         GROUP BY
             stt.Store_ID,
             stt.Store_Name,
+            stt.Region,
             Year_Month
         ORDER BY                              
             Year_Month
