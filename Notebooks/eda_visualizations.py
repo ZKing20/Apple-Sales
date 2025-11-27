@@ -85,7 +85,7 @@ def plot_category_revenue_by_year(category_revenue):
     if "Total_Revenue" in category_revenue.columns:
         category_revenue = category_revenue.drop(columns = ["Total_Revenue"])
     
-    #Set category names as index so they're used for y-axis
+    # Set category names as index so they're used for y-axis
     category_revenue = category_revenue.set_index("category_name")
     
     # Plot
@@ -176,32 +176,24 @@ claims_rate_country = load_claims_rate_country(limit, sort_order)
 plot_claims_rate_by_country(claims_rate_country)
 
 # %%
-# (5) Bar Chart: Claims Rate vs. Revenue
+# (5) Bar Chart: Claims Rate per Million by Store
 limit = 10
 sort_order = 'DESC'
 
 def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
-    claims_rate_store_revenue['Claims_Per_1000'] = claims_rate_store_revenue.apply(
-        lambda r: (r['Claims_Count'] / r['Total_Revenue'] * 1000)
-        if r['Total_Revenue'] > 0 else 0,
-        axis = 1
-    )
-
-    claims_rate_store_revenue = claims_rate_store_revenue.sort_values(by = 'Claims_Per_1000', ascending = False)
-
     plt.figure(figsize=(20,10))
     sns.barplot(
         data=claims_rate_store_revenue,
         x='Store_Name',
-        y='Claims_Per_1000',
+        y='claims_per_million',
         hue='Region',
         errorbar=None,
         dodge=False,
         palette='tab10'
     )
-    plt.title('Claims per $1000 by Store')
+    plt.title('Claims per $1,000,000 by Store')
     plt.xlabel('Store Name')
-    plt.ylabel('Claims Per $1000')
+    plt.ylabel('Claims Per Million')
     plt.xticks(rotation=45, ha='right')
     plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
