@@ -32,7 +32,7 @@ import seaborn as sns
 
 #%%
 # (1) Bar Chart: Top N Products by Revenue
-limit = 10
+limit = 20
 sort_order = 'DESC'
 
 def plot_top_products_revenue(top_products_revenue):
@@ -108,9 +108,10 @@ plot_category_revenue_by_year(category_revenue)
 
 #%%
 # (3.5) Line Graph: Top N Regions and Stores by Monthly Revenue
-limit = 20
+limit = 10
 sort_order = 'DESC'
 def plot_top_stores_monthly_revenue(top_stores_data):
+    # Plot Regions Line Graph
     plt.figure(figsize=(20,10))
     sns.lineplot(
         data=top_stores_data,
@@ -120,14 +121,15 @@ def plot_top_stores_monthly_revenue(top_stores_data):
         marker = 'o',
         errorbar = None
     )
-    plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
+    plt.title(f'Monthly Revenue Trend for Top {limit} Regions')
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True)
     plt.show()
 
+    # Plot Stores Line Graph
     plt.figure(figsize=(20,10))
     sns.lineplot(
         data=top_stores_data,
