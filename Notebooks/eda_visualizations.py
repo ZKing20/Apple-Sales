@@ -203,7 +203,7 @@ plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
 # %%
 # (6) Bar Chart: Claims Rate by Product
-limit = 80
+limit = 25
 sort_order = 'DESC'
 
 def plot_claims_rate_by_product(claims_rate_product):
@@ -211,7 +211,7 @@ def plot_claims_rate_by_product(claims_rate_product):
     sns.barplot(
         data = claims_rate_product,
         x = 'Product_Name',
-        y = 'Claims_Rate',
+        y = 'Claims_Rate_Decimal',
         hue = 'category_name',
         errorbar = None,
         dodge = False,
@@ -219,9 +219,9 @@ def plot_claims_rate_by_product(claims_rate_product):
     )
     plt.title(f'Top {limit} Products by Claims Rate')
     plt.xlabel('Product Name')
-    plt.ylabel('Claims Rate')
+    plt.ylabel('Claims Rate (%)')
     plt.xticks(rotation = 45, ha = 'right')
-    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(title='Product Category', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
 claims_rate_product = load_claims_rate_product(limit, sort_order)

@@ -266,7 +266,6 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
 
 # %%
 # (6) Claims Rate by Product
-# Needs to be updated (Based on (5))
 def load_claims_rate_product(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -274,7 +273,8 @@ def load_claims_rate_product(limit: int, sort_order: str):
                 p.Product_ID,
                 p.Product_Name,
                 c.category_name,
-                CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(5,2)) AS Claims_Rate
+                SUM(s.quantity) AS Total_Sales,
+                COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims
             FROM
                 products p
             JOIN
@@ -289,14 +289,20 @@ def load_claims_rate_product(limit: int, sort_order: str):
                 c.category_name
         )
         SELECT
-            cr.Product_ID,
-            cr.Product_Name,
-            cr.Claims_Rate,
-            cr.category_name 
+            Product_ID,
+            Product_Name,
+            category_name,
+            Completed_Claims,
+            CAST(
+                COALESCE(
+                    (Completed_Claims * 100) / NULLIF(Total_Sales, 0),         
+                    0
+                ) AS DECIMAL(5,2)
+            ) AS Claims_Rate_Decimal 
         FROM
-            Claims_Rate cr
+            Claims_Rate
         ORDER BY 
-            cr.Claims_Rate {sort_order}
+            Claims_Rate_Decimal {sort_order}
         LIMIT {limit}
     """).fetchdf()
     return df
