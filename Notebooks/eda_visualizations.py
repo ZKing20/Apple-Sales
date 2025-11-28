@@ -302,37 +302,4 @@ plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
 #%%
 # Testing
 if __name__ == '__main__':
-# Old version of (8)--Not sure if I want to fully change it yet
-    def plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store):
-        # Aggregate by store
-        monthly_claims_revenue_by_store = (
-            monthly_claims_revenue_by_store.groupby(['Store_ID', 'Store_Name', 'Country'], as_index = False)
-            .agg({
-                'revenue': 'sum',
-                'claim_count': 'sum',
-                'units_sold': 'sum'
-            })
-        )
-        # Compute claims per $1000 revenue
-        monthly_claims_revenue_by_store['Claims_Per_1000'] = monthly_claims_revenue_by_store.apply(
-            lambda r: (r['claim_count'] / r['revenue'] * 1000) if r['revenue'] > 0 else 0,
-            axis = 1
-        )
-        # Plot the scatterplot
-        plt.figure(figsize=(20,10))
-        sns.scatterplot(
-            data=monthly_claims_revenue_by_store,
-            x='revenue',
-            y='Claims_Per_1000',
-            size='units_sold',
-            sizes=(20, 300),
-            hue='Country'
-        )
-        plt.xlabel('Total Revenue')
-        plt.ylabel('Claims per $1000')
-        plt.title('Claims per $1000 vs Revenue by Store')
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-        plt.show()
-
-    monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
-    plot_claims_vs_revenue_by_store(monthly_claims_revenue_by_store)
+    None
