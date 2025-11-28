@@ -231,14 +231,14 @@ plot_claims_rate_by_product(claims_rate_product)
 # (7) Heatmap: Claims Rate by Product and Store
 def plot_top_10_claims_heatmap(claims_product_store):
     top_stores = (
-        claims_product_store.groupby("Store_Name")["Claims_Rate"]
+        claims_product_store.groupby("Store_Name")["Claims_Rate_Decimal"]
         .mean()
         .nlargest(10)
         .index
     )
 
     top_products = (
-        claims_product_store.groupby("Product_Name")["Claims_Rate"]
+        claims_product_store.groupby("Product_Name")["Claims_Rate_Decimal"]
         .mean()
         .nlargest(10)
         .index
@@ -252,7 +252,7 @@ def plot_top_10_claims_heatmap(claims_product_store):
     claims_product_store = filtered.pivot_table(
         index = 'Store_Name',
         columns = 'Product_Name',
-        values = 'Claims_Rate',
+        values = 'Claims_Rate_Decimal',
         aggfunc = 'mean'
     )
 

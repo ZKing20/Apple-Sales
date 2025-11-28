@@ -309,17 +309,17 @@ def load_claims_rate_product(limit: int, sort_order: str):
 
 #%%
 #  (7) Claims Rate by Product and Store
-# Needs to be updated (Based on (5))
 def load_claims_rate_products_store(sort_order: str = 'ASC'):
     df = con.execute(f"""
         WITH Claims_Rate AS (
             SELECT
                 st.Store_ID,
                 st.Store_Name,
+                st.Country,
                 p.product_ID,
                 p.product_Name,
-                COUNT(w.claim_id) AS Claims_Count,
-                CAST(100 * COUNT(w.claim_id) / SUM(s.quantity) AS DECIMAL(5,2)) AS Claims_Rate
+                SUM(s.quantity) AS Total_Sales,
+                COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims
             FROM
                 stores st
             LEFT JOIN 
@@ -331,23 +331,25 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
             GROUP BY
                 st.Store_ID,
                 st.Store_Name,
+                st.Country,
                 p.Product_ID,
                 p.Product_Name
         )
         SELECT
-            cr.Store_ID,
-            cr.Store_Name,
-            cr.Product_ID,
-            cr.Product_Name,
-            cr.Claims_Count,
-            cr.Claims_Rate, 
-            st.Country
+            Store_ID,
+            Store_Name,
+            product_ID,
+            product_Name,
+            CAST(
+                COALESCE(
+                    (Completed_Claims * 100) / NULLIF(Total_Sales, 0),         
+                    0
+                ) AS DECIMAL(5,2)
+            ) AS Claims_Rate_Decimal,
         FROM
-            Claims_Rate cr
-        JOIN 
-            stores st ON cr.Store_ID = st.Store_ID
+            Claims_Rate
         ORDER BY 
-            cr.Claims_Rate {sort_order}
+            Claims_Rate_Decimal {sort_order}
     """).fetchdf()
     return df
 
@@ -356,7 +358,6 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
 
 # %%
 # (8) Monthly Claims vs. Revenue by Store
-# Needs to be updated (Based on (5))
 def load_monthly_claims_revenue_by_store():
     df = con.execute("""
         SELECT
@@ -367,8 +368,8 @@ def load_monthly_claims_revenue_by_store():
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
             SUM(s.quantity * p.price) AS revenue,
             SUM(s.quantity) AS units_sold,
-            COUNT(w.claim_id) AS claim_count,
-            1000 * claim_count / revenue AS claims_per_thousand
+            COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims,
+            1000 * Completed_Claims / revenue AS claims_per_thousand
         FROM 
             sales s
         JOIN 
