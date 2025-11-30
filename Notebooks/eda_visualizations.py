@@ -78,7 +78,7 @@ top_country_data = load_country_monthly_revenue(limit, sort_order)
 plot_top_country_monthly_revenue(top_country_data)
 
 #%%
-# (3) Horizontal Bar Chart: Revenue by Category
+# (3.a) Horizontal Bar Chart: Revenue by Category
 sort_order = 'ASC'
 def plot_category_revenue_by_year(category_revenue):
     # Drop the Total_Revenue column so it's not included in the bar
@@ -107,14 +107,13 @@ category_revenue = load_category_revenue_by_year(sort_order)
 plot_category_revenue_by_year(category_revenue)
 
 #%%
-# (3.5) Line Graph: Top N Regions and Stores by Monthly Revenue
+# (3.b) Line Graph: Top N Regions by Monthly Revenue
 limit = 10
 sort_order = 'DESC'
-def plot_top_stores_monthly_revenue(top_stores_data):
-    # Plot Regions Line Graph
+def plot_top_regions_monthly_revenue(top_regions_data):
     plt.figure(figsize=(20,10))
     sns.lineplot(
-        data=top_stores_data,
+        data=top_regions_data,
         x='Year_Month',
         y='Monthly_Revenue',
         hue = 'Region',
@@ -129,7 +128,14 @@ def plot_top_stores_monthly_revenue(top_stores_data):
     plt.grid(True)
     plt.show()
 
-    # Plot Stores Line Graph
+top_regions_data = load_regions_monthly_revenue(limit, sort_order)
+plot_top_regions_monthly_revenue(top_regions_data)
+
+#%%
+# (3.c) Line Graph: Top N Stores by Monthly Revenue
+limit = 10
+sort_order = 'DESC'
+def plot_top_stores_monthly_revenue(top_stores_data):
     plt.figure(figsize=(20,10))
     sns.lineplot(
         data=top_stores_data,

@@ -88,7 +88,7 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
     return df
 
 # %%
-# (3) Revenue by Category
+# (3.a) Revenue by Category
 def load_category_revenue_by_year(sort_order: str):
     df = con.execute(f"""
         WITH yearly AS (
@@ -139,8 +139,47 @@ def load_category_revenue_by_year(sort_order: str):
     """).fetchdf()
     return df
 
+#%%
+# (3.b) Top N Regions and Stores by Monthly Revenue
+def load_regions_monthly_revenue(limit: int, sort_order: str):
+    df = con.execute(f"""
+        WITH region_totals AS (
+            SELECT
+                st.Region,
+                SUM(s.quantity * p.Price) AS Total_Revenue
+            FROM
+                sales s
+            LEFT JOIN 
+                products p ON s.product_id = p.Product_ID
+            LEFT JOIN
+                stores st ON s.store_id = st.Store_ID
+            GROUP BY 
+                st.Region
+            ORDER BY 
+                Total_Revenue {sort_order}
+                LIMIT {limit}         
+        )
+        SELECT
+            rt.Region,
+            SUM(s.quantity * p.Price) AS Monthly_Revenue,
+            strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
+        FROM
+            sales s
+        LEFT JOIN 
+            products p ON s.product_id = p.Product_ID
+        LEFT JOIN 
+            stores st ON s.store_id = st.Store_ID
+        LEFT JOIN 
+            region_totals rt ON st.Region = rt.Region
+        GROUP BY
+            rt.Region,
+            Year_Month
+        ORDER BY                              
+            Year_Month
+    """).fetchdf()
+    return df
 # %%
-# (3.5) Top N Regions and Stores by Monthly Revenue
+# (3.c) Top N Regions and Stores by Monthly Revenue
 def load_stores_monthly_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH store_totals AS (
