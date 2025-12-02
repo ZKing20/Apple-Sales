@@ -28,9 +28,21 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 (Will fill in after Notebook Completion, and when insights are finalized)
 
 ## Repository Structure
-- 'Data/' -- raw datasets
-- 'Notebooks/' -- primary analysis notebook
-- 'Scripts/' -- supporting/SQL logic files
+├── Data/                    (CSV files)
+
+├── Notebooks/               (Jupyter Notebooks for EDA and visualization)
+
+├── Scripts/                 (Python scripts for SQL logic and database connection)
+
+│   ├── eda_queries.py       (SQL queries separating logic from presentation)
+
+│   ├── db_connections.py    (DuckDB connection handling)
+
+│   ├── eda_visualizations.py  (Plotting logic)
+
+├── Images/                  (Exported charts and graphs used in this README)
+
+├── README.md                (Project documentation)
 
 ## Status
 Work in progress - visualization and final insights in progress.
