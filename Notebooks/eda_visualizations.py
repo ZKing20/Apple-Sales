@@ -31,7 +31,7 @@ import seaborn as sns
 # Revenue Performance
 
 #%%
-# (1) Bar Chart: Top N Products by Revenue
+# (1.a) Bar Chart: Top N Products by Global Revenue (Small Scope)
 limit = 20
 sort_order = 'DESC'
 
@@ -40,18 +40,67 @@ def plot_top_products_revenue(top_products_revenue):
     sns.barplot(
         data = top_products_revenue,
         x = 'Product_Name',
-        y = 'Total_Revenue',
+        y = 'Total_Revenue_Millions',
         hue = 'category_name'
     )
     plt.title(f'Top {limit} Products by Revenue')
     plt.xlabel('Product Name')
-    plt.ylabel('Total Revenue')
+    plt.ylabel('Total Revenue (in Millions)')
     plt.xticks(rotation = 45, ha = 'right')
     plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
 top_products_revenue = load_products_revenue(limit, sort_order)
 plot_top_products_revenue(top_products_revenue)
+
+#%%
+# (1.b) Bar Chart: Top N Products by Global Revenue (Wide Scope)
+limit = 100
+sort_order = 'DESC'
+
+def plot_top_products_revenue(top_products_revenue):
+    plt.figure(figsize=(10,6))
+    ax = sns.barplot(
+        data = top_products_revenue,
+        x = 'Product_Name',
+        y = 'Total_Revenue_Millions',
+        hue = 'category_name'
+    )
+    ax.set_xlabel('')
+    ax.set_xticklabels([])
+    plt.title(f'Top {limit} Products by Revenue')
+    plt.ylabel('Total Revenue (in Millions)')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+top_products_revenue = load_products_revenue(limit, sort_order)
+plot_top_products_revenue(top_products_revenue)
+
+#%%
+# (1.c) Bar Chart: Top N Products by Revenue and Region
+Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
+limit = 20
+sort_order = 'DESC'
+
+def plot_top_products_revenue_region(top_products_revenue_region):
+    plt.figure(figsize=(10,6))
+    sns.barplot(
+        data = top_products_revenue_region,
+        x = 'Product_Name',
+        y = 'Total_Revenue_Millions',
+        hue = 'category_name',
+        errorbar = None
+    )
+    plt.title(f'Top {limit} Products by Revenue ({region})')
+    plt.xlabel('Product Name')
+    plt.ylabel('Total Revenue (in Millions)')
+    plt.xticks(rotation = 45, ha = 'right')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+for region in Regions:
+    top_products_revenue_region = load_products_revenue_region(limit, sort_order, region)
+    plot_top_products_revenue_region(top_products_revenue_region)
 
 # %%
 # (2) Line Graph: Top N Countries by Monthly Revenue

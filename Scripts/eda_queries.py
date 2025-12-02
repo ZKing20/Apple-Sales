@@ -23,13 +23,13 @@ con = get_connection()
 # Revenue Performance
 
 # %%
-# (1) Top N Products by Revenue
+# (1) Top N Products by Global Revenue
 def load_products_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT 
             p.Product_Name,
             c.category_name,
-            SUM(s.quantity * p.Price) as Total_Revenue,
+            SUM(s.quantity * p.Price) / 1000000 as Total_Revenue_Millions,
             COUNT(*) as Units_Sold
         FROM 
             sales s
@@ -38,11 +38,44 @@ def load_products_revenue(limit: int, sort_order: str):
         JOIN 
             category c ON p.Category_ID = c.category_id
         GROUP BY
-            p.Product_ID, c.category_id,
+            p.Product_ID, 
+            c.category_id,
             p.Product_Name, 
             c.category_name
         ORDER BY
-            Total_Revenue {sort_order}
+            Total_Revenue_Millions {sort_order}
+        LIMIT {limit}
+    """).fetchdf()
+    return df
+
+# %%
+# (1.c) Top N Products by Revenue and Region
+def load_products_revenue_region(limit: int, sort_order: str, region: str):
+    df = con.execute(f"""
+        SELECT 
+            p.Product_Name,
+            c.category_name,
+            st.Region,
+            SUM(s.quantity * p.Price) / 1000000 as Total_Revenue_Millions,
+            COUNT(*) as Units_Sold
+        FROM 
+            sales s
+        JOIN 
+            products p ON s.product_id = p.Product_ID
+        JOIN 
+            stores st ON s.store_id = st.Store_ID
+        JOIN 
+            category c ON p.Category_ID = c.category_id
+        WHERE 
+            st.Region = '{region}'
+        GROUP BY
+            p.Product_ID, 
+            c.category_id,
+            st.Region,
+            p.Product_Name, 
+            c.category_name
+        ORDER BY
+            Total_Revenue_Millions {sort_order}
         LIMIT {limit}
     """).fetchdf()
     return df
