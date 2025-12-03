@@ -231,7 +231,7 @@ claims_rate_country = load_claims_rate_country(limit, sort_order)
 plot_claims_rate_by_country(claims_rate_country)
 
 # %%
-# (5) Bar Chart: Claims Rate per Million by Store
+# (5.a) Bar Chart: Claims Rate per Million by Store
 limit = 10
 sort_order = 'DESC'
 
@@ -257,7 +257,7 @@ claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
 plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
 # %%
-# (6) Bar Chart: Claims Rate by Product
+# (5) Bar Chart: Claims Rate by Product
 limit = 25
 sort_order = 'DESC'
 
@@ -283,7 +283,7 @@ claims_rate_product = load_claims_rate_product(limit, sort_order)
 plot_claims_rate_by_product(claims_rate_product)
 
 #%%
-# (7) Heatmap: Claims Rate by Product and Store
+# (6) Heatmap: Claims Rate by Product and Store
 def plot_top_10_claims_heatmap(claims_product_store):
     top_stores = (
         claims_product_store.groupby("Store_Name")["Claims_Rate_Decimal"]
@@ -332,6 +332,32 @@ plot_top_10_claims_heatmap(claims_product_store)
 
 #%%
 # Revenue vs Quality
+
+# %%
+# (7) Bar Chart: Claims Rate per Million by Store
+limit = 10
+sort_order = 'DESC'
+
+def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
+    plt.figure(figsize=(20,10))
+    sns.barplot(
+        data=claims_rate_store_revenue,
+        x='Store_Name',
+        y='claims_per_million',
+        hue='Region',
+        errorbar=None,
+        dodge=False,
+        palette='tab10'
+    )
+    plt.title('Claims per $1,000,000 by Store')
+    plt.xlabel('Store Name')
+    plt.ylabel('Claims Per Million')
+    plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
+plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
 # %%
 # (8) Scatterplot: Claims Rate vs. Total Revenue

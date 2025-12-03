@@ -23,7 +23,7 @@ con = get_connection()
 # Revenue Performance
 
 # %%
-# (1) Top N Products by Global Revenue
+# (1.a/b) Top N Products by Global Revenue
 def load_products_revenue(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT 
@@ -291,53 +291,8 @@ def load_claims_rate_country(limit: int, sort_order: str):
     """).fetchdf()
     return df
 
-#%%
-# (5) Claims Rate per Million by Store
-def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
-    df = con.execute(f"""
-        WITH claims_per_revenue AS (
-            SELECT
-                st.Store_ID,
-                st.Store_Name,
-                st.Country,
-                st.Region,
-                SUM(s.quantity * p.Price) AS Total_Revenue,
-                COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims
-            FROM
-                stores st
-            LEFT JOIN
-                sales s ON st.Store_ID = s.store_id
-            LEFT JOIN
-                products p ON s.product_id = p.Product_ID
-            LEFT JOIN
-                warranty w ON s.sale_id = w.sale_id
-            GROUP BY
-                st.Store_ID,
-                st.Store_Name,
-                st.Region,
-                st.Country
-        )
-        SELECT
-            Store_ID,
-            Store_Name,
-            Country,
-            Region,
-            CAST(
-                COALESCE(
-                    (Completed_Claims * 1000000) / NULLIF(Total_Revenue, 0),         
-                    0
-                ) AS DECIMAL(6,2)
-            ) AS claims_per_million
-        FROM
-            claims_per_revenue           
-        ORDER BY 
-            claims_per_million {sort_order}
-        LIMIT {limit}         
-    """).fetchdf()
-    return df
-
 # %%
-# (6) Claims Rate by Product
+# (5) Claims Rate by Product
 def load_claims_rate_product(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -380,7 +335,7 @@ def load_claims_rate_product(limit: int, sort_order: str):
     return df
 
 #%%
-#  (7) Claims Rate by Product and Store
+#  (6) Claims Rate by Product and Store
 def load_claims_rate_products_store(sort_order: str = 'ASC'):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -427,6 +382,51 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
 
 #%%
 # Revenue vs Quality
+
+#%%
+# (7) Claims Rate per Million by Store
+def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
+    df = con.execute(f"""
+        WITH claims_per_revenue AS (
+            SELECT
+                st.Store_ID,
+                st.Store_Name,
+                st.Country,
+                st.Region,
+                SUM(s.quantity * p.Price) AS Total_Revenue,
+                COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims
+            FROM
+                stores st
+            LEFT JOIN
+                sales s ON st.Store_ID = s.store_id
+            LEFT JOIN
+                products p ON s.product_id = p.Product_ID
+            LEFT JOIN
+                warranty w ON s.sale_id = w.sale_id
+            GROUP BY
+                st.Store_ID,
+                st.Store_Name,
+                st.Region,
+                st.Country
+        )
+        SELECT
+            Store_ID,
+            Store_Name,
+            Country,
+            Region,
+            CAST(
+                COALESCE(
+                    (Completed_Claims * 1000000) / NULLIF(Total_Revenue, 0),         
+                    0
+                ) AS DECIMAL(6,2)
+            ) AS claims_per_million
+        FROM
+            claims_per_revenue           
+        ORDER BY 
+            claims_per_million {sort_order}
+        LIMIT {limit}         
+    """).fetchdf()
+    return df
 
 # %%
 # (8) Monthly Claims vs. Revenue by Store
