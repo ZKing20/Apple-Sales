@@ -32,6 +32,19 @@ import seaborn as sns
 
 #%%
 # (1.a) Bar Chart: Top N Products by Global Revenue (Small Scope)
+consistent_categroy_palette = {
+    'Accessory': '#3498DB',  # Blue
+    'Audio': '#2ECC71',      # Green
+    'Desktop': '#F1C40F',    # Yellow
+    'Laptop': '#E67E22',     # Orange
+    'Smartphone': '#E74C3C', # Red
+    'Tablet': '#9B59B6',     # Purple
+    'Subscription Service': '#1ABC9C',    # Cyan/Turquoise
+    'Wearable': '#964B00',  # Brown
+    'Accessories': '#87CEEB',   # Sky Blue
+    'Streaming Device': '#FFC0CB',  # Pink
+    'Smart Speaker': '#000000', # Black
+}
 limit = 20
 sort_order = 'DESC'
 
@@ -41,7 +54,8 @@ def plot_top_products_revenue(top_products_revenue):
         data = top_products_revenue,
         x = 'Product_Name',
         y = 'Total_Revenue_Millions',
-        hue = 'category_name'
+        hue = 'category_name',
+        palette = consistent_categroy_palette
     )
     plt.title(f'Top {limit} Products by Revenue')
     plt.xlabel('Product Name')
@@ -64,7 +78,8 @@ def plot_top_products_revenue(top_products_revenue):
         data = top_products_revenue,
         x = 'Product_Name',
         y = 'Total_Revenue_Millions',
-        hue = 'category_name'
+        hue = 'category_name',
+        palette = consistent_categroy_palette
     )
     ax.set_xlabel('')
     ax.set_xticklabels([])
@@ -78,6 +93,7 @@ plot_top_products_revenue(top_products_revenue)
 
 #%%
 # (1.c) Bar Chart: Top N Products by Revenue and Region
+
 Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
 limit = 20
 sort_order = 'DESC'
@@ -89,7 +105,8 @@ def plot_top_products_revenue_region(top_products_revenue_region):
         x = 'Product_Name',
         y = 'Total_Revenue_Millions',
         hue = 'category_name',
-        errorbar = None
+        errorbar = None,
+        palette = consistent_categroy_palette
     )
     plt.title(f'Top {limit} Products by Revenue ({region})')
     plt.xlabel('Product Name')
