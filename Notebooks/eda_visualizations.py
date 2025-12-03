@@ -33,15 +33,14 @@ import seaborn as sns
 #%%
 # (1.a) Bar Chart: Top N Products by Global Revenue (Small Scope)
 consistent_categroy_palette = {
-    'Accessory': '#1f77b4',               # Blue
+    'Accessories': '#1f77b4',             # Blue
     'Audio': '#2ca02c',                   # Green
-    'Desktop': '#F1C40F',                 # Yellow
+    'Desktop': '#bcbd22',                 # Olive
     'Laptop': '#ff7f0e',                  # Orange
     'Smartphone': '#d62728',              # Red
     'Tablet': '#9467bd',                  # Purple
     'Subscription Service': "#17becf",    # Cyan
     'Wearable': '#8c564b',                # Brown
-    'Accessories': '#bcbd22',             # Olive
     'Streaming Device': '#e377c2',        # Pink
     'Smart Speaker': '#7f7f7f',           # Gray
 }
