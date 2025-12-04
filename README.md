@@ -28,25 +28,39 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 (Will fill in after Notebook Completion, and when insights are finalized)
 
 ## Repository Structure
-├── Data/                    (CSV files)
+├── Data/                      (CSV files)
 
-├── Notebooks/               (Jupyter Notebooks for EDA and visualization)
-
-├── Scripts/                 (Python scripts for SQL logic and database connection)
-
-│   ├── eda_queries.py       (SQL queries separating logic from presentation)
-
-│   ├── db_connections.py    (DuckDB connection handling)
+├── Notebooks/                 (Jupyter Notebooks for EDA and visualization)
 
 │   ├── eda_visualizations.py  (Plotting logic)
 
-├── Images/                  (Exported charts and graphs used in this README)
+├── Scripts/                   (Python scripts for SQL logic and database connection)
 
-├── README.md                (Project documentation)
+│   ├── __init__.py            (Allows this folder to be imported by other files)
+
+│   ├── eda_queries.py         (SQL queries separating logic from presentation)
+
+│   ├── db_connections.py      (DuckDB connection handling)
+
+│   ├── config.py              (Defines variables used in db_connections.py)
+
+├── Images/                    (Exported charts and graphs used in this README, separated by Key Question)
+
+├── .vscode/                   (Files needed to replicate this project using vscode)
+
+│   ├── extensions.json        (packages and modules needed to replicate)
+
+│   ├── settions.json          (various necessary setings)
+
+├── .gitignore   
+
+├── .gitattributes
+
+├── README.md                  (Project documentation)
 
 ## Status
 Work in progress - visualization and final insights in progress.
 
-All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset
+All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
 
 Any and all feedback is greatly appreciated
