@@ -267,6 +267,49 @@ season, but maybe try a few targeted add campaigns for Valentine's Day
 to offset predictably slow months.
 
 """
+
+#%%
+# (2.c) Line Graph: Regions by Monthly Revenue
+sort_order = 'DESC'
+def plot_top_regions_monthly_revenue(top_regions_data):
+    plt.figure(figsize=(20,10))
+    sns.lineplot(
+        data = top_regions_data,
+        x = 'Year_Month',
+        y = 'Monthly_Revenue',
+        hue = 'Region',
+        marker = 'o',
+        errorbar = None
+    )
+    plt.title(f'Monthly Revenue Trend for Top {limit} Regions')
+    plt.xlabel('Year-Month')
+    plt.ylabel('Monthly Revenue')
+    plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.grid(True)
+    plt.show()
+
+top_regions_data = load_regions_monthly_revenue(sort_order)
+plot_top_regions_monthly_revenue(top_regions_data)
+
+"""
+
+DESCRIPTION:
+This code generates a visualization that shows the Regions ranked by 
+monthly revenue, helping give more a more well rounded answer to
+Key Question (2). By showing the regions themselves, this helps give
+more context about the overall trends of our top stores.
+
+INSIGHT:
+Contradicting our initial assumptions from (2.a), we see that 
+North America and Asia are actually quite similar performers in terms of
+revenue, and are clearly at or near market saturation. It would therefore
+make more sense to focus strategies on expanding the market specifically
+in the Middle East, sa it is an area with higher income countries that 
+have well performing stores, but an overall low market share for Apple's
+overall revenue. 
+
+"""
 #%%
 # (3.a) Horizontal Bar Chart: Revenue by Category
 sort_order = 'ASC'
@@ -296,54 +339,15 @@ def plot_category_revenue_by_year(category_revenue):
 category_revenue = load_category_revenue_by_year(sort_order)
 plot_category_revenue_by_year(category_revenue)
 
-#%%
-# (3.b) Line Graph: Top N Regions by Monthly Revenue
-limit = 10
-sort_order = 'DESC'
-def plot_top_regions_monthly_revenue(top_regions_data):
-    plt.figure(figsize=(20,10))
-    sns.lineplot(
-        data = top_regions_data,
-        x = 'Year_Month',
-        y = 'Monthly_Revenue',
-        hue = 'Region',
-        marker = 'o',
-        errorbar = None
-    )
-    plt.title(f'Monthly Revenue Trend for Top {limit} Regions')
-    plt.xlabel('Year-Month')
-    plt.ylabel('Monthly Revenue')
-    plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.grid(True)
-    plt.show()
+"""
 
-top_regions_data = load_regions_monthly_revenue(limit, sort_order)
-plot_top_regions_monthly_revenue(top_regions_data)
+DESCRIPTION:
 
-#%%
-# (3.c) Line Graph: Top N Stores by Monthly Revenue
-limit = 10
-sort_order = 'DESC'
-def plot_top_stores_monthly_revenue(top_stores_data):
-    plt.figure(figsize=(20,10))
-    sns.lineplot(
-        data = top_stores_data,
-        x = 'Year_Month',
-        y = 'Monthly_Revenue',
-        hue = 'Store_Name',
-        marker = 'o'
-    )
-    plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
-    plt.xlabel('Year-Month')
-    plt.ylabel('Monthly Revenue')
-    plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Store', bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.grid(True)
-    plt.show()
 
-top_stores_data = load_stores_monthly_revenue(limit, sort_order)
-plot_top_stores_monthly_revenue(top_stores_data)
+INSIGHT:
+
+
+"""
 
 #%%
 # Warranty and Product Quality
@@ -386,6 +390,16 @@ def plot_claims_rate_by_country(claims_rate_country):
 claims_rate_country = load_claims_rate_country(limit, sort_order)
 plot_claims_rate_by_country(claims_rate_country)
 
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
+
 # %%
 # (5.a) Bar Chart: Claims Rate per Million by Store
 limit = 10
@@ -412,6 +426,16 @@ def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
 claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
 plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
+
 # %%
 # (5) Bar Chart: Claims Rate by Product
 limit = 25
@@ -437,6 +461,16 @@ def plot_claims_rate_by_product(claims_rate_product):
 
 claims_rate_product = load_claims_rate_product(limit, sort_order)
 plot_claims_rate_by_product(claims_rate_product)
+
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
 
 #%%
 # (6) Heatmap: Claims Rate by Product and Store
@@ -486,6 +520,16 @@ def plot_top_10_claims_heatmap(claims_product_store):
 claims_product_store = load_claims_rate_products_store(sort_order = 'DESC')
 plot_top_10_claims_heatmap(claims_product_store)
 
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
+
 #%%
 # Revenue vs Quality
 
@@ -527,6 +571,16 @@ def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
 claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
 plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
+
 # %%
 # (8) Scatterplot: Claims Rate vs. Total Revenue
 def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
@@ -547,6 +601,16 @@ def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
 
 monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
 plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
+
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
 
 #%%
 # Testing
