@@ -222,7 +222,7 @@ saturated, there is potential room for growth in Asia.
 """
 
 #%%
-# (2.b) Top N stores by Monthly Revenue (Color coded by Region)
+# (2.b) Line Graph: Top N stores by Monthly Revenue
 limit = 5
 sort_order = 'DESC'
 
@@ -357,8 +357,30 @@ are undersaturated in the market at the moment, despite their popularity.
 """
 
 #%%
-# (3.b) MISSING Line Graph: Category by Monthly Revenue
+# (3.b) Line Graph: Category by Monthly Revenue
+sort_order = 'DESC'
 
+def plot_category_monthly_revenue(category_data):
+    plt.figure(figsize=(20,10))
+    sns.lineplot(
+        data = category_data,
+        x = 'Year_Month',
+        y = 'Monthly_Revenue_Millions',
+        hue = 'category_name',
+        palette = consistent_category_palette,
+        marker = 'o',
+        errorbar = None
+    )
+    plt.title(f'Monthly Revenue Trend by Category')
+    plt.xlabel('Year-Month')
+    plt.ylabel('Monthly Revenue (in Millions)')
+    plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.grid(True)
+    plt.show()
+
+category_data = load_category_monthly_revenue(sort_order)
+plot_category_monthly_revenue(category_data)
 
 """
 
@@ -368,7 +390,16 @@ helping to directly answer Key Question (3), by giving an idea of trends for pro
 categories over time.
 
 INSIGHT:
-MISSING
+This shows even more evidence that February consistently has dips in generated
+revenue. Additionally, it shows that there are only 3 categories pulling in
+less than $7.5M per month: Subscription Services, Streaming Devices, and
+Smart Speakers. Smart Speakers and Streaming Devices are much more in the
+category of luxury items, especially when compared to the other underperforming
+category--Subscription Services. Therefore, it seems more likely that Subscription
+Services have the highest opportunity for growth out of the 3 low performers,
+especially when combined with earlier findings. This gives more credence to 
+the idea of bundling subscription services with other products, in order to get
+more customers into the entire Apple ecosystem.
 
 """
 

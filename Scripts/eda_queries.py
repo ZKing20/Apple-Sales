@@ -121,7 +121,7 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
     return df
 
 #%%
-# (2.b) Top N stores by Monthly Revenue (Color coded by Region)
+# (2.b) Top N stores by Monthly Revenue
 def load_stores_monthly_revenue(limit:int, sort_order: str):
     df = con.execute(f"""
         WITH store_totals AS (
@@ -260,7 +260,53 @@ def load_category_revenue_by_year(sort_order: str):
     return df
 
 #%%
-# (3.b) MISSING Category by Monthly Revenue
+# (3.b) Category by Monthly Revenue
+def load_category_monthly_revenue(sort_order: str):
+    df = con.execute(f"""
+        WITH category_totals AS (
+            SELECT
+                c.category_id,
+                c.category_name,
+                st.Country,
+                SUM(s.quantity * p.Price) / 1000000 AS Total_Revenue_Millions
+            FROM
+                sales s
+            LEFT JOIN 
+                products p ON s.product_id = p.Product_ID
+            LEFT JOIN 
+                category c ON p.Category_ID = c.category_id
+            LEFT JOIN 
+                stores st ON s.store_id = st.Store_ID
+            GROUP BY 
+                c.category_id,
+                c.category_name,
+                st.Country
+            ORDER BY 
+                Total_Revenue_Millions {sort_order}
+        )
+        SELECT
+            ct.category_id,
+            ct.category_name,
+            ct.Country,
+            SUM(s.quantity * p.Price) / 1000000 AS Monthly_Revenue_Millions,
+            strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
+        FROM
+            sales s
+        LEFT JOIN 
+            products p ON s.product_id = p.Product_ID
+        LEFT JOIN 
+            category c ON p.Category_ID= c.category_id
+        LEFT JOIN    
+            category_totals ct ON c.category_id = ct.category_id
+        GROUP BY
+            ct.category_id,
+            ct.category_name,
+            ct.Country,
+            Year_Month
+        ORDER BY                             
+            Year_Month
+    """).fetchdf()
+    return df
 
 #%%
 # Warranty and Product Quality
