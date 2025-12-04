@@ -250,14 +250,17 @@ def load_category_revenue_by_year(sort_order: str):
             revenue_2022,
             revenue_2023,
             revenue_2024,
-            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024)
-                AS Total_Revenue
+            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024)/1000000 
+                AS Total_Revenue_Millions
         FROM 
             yearly
         ORDER BY
-            Total_Revenue {sort_order};           
+            Total_Revenue_Millions {sort_order};           
     """).fetchdf()
     return df
+
+#%%
+# (3.b) MISSING Category by Monthly Revenue
 
 #%%
 # Warranty and Product Quality

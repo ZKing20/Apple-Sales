@@ -27,6 +27,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Definitions used frequently
+Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
+consistent_categroy_palette = {             # Color palette matched to tab10 palette"
+    'Accessories': '#1f77b4',             # Blue
+    'Audio': '#2ca02c',                   # Green
+    'Desktop': '#bcbd22',                 # Olive
+    'Laptop': '#ff7f0e',                  # Orange
+    'Smartphone': '#d62728',              # Red
+    'Tablet': '#9467bd',                  # Purple
+    'Subscription Service': "#17becf",    # Cyan
+    'Wearable': '#8c564b',                # Brown
+    'Streaming Device': '#e377c2',        # Pink
+    'Smart Speaker': '#7f7f7f',           # Gray
+}
 # %%
 # Revenue Performance
 
@@ -46,18 +60,6 @@ Which product categories show strong growth or decline over time?
 """
 #%%
 # (1.a) Bar Chart: Top N Products by Global Revenue (Small Scope)
-consistent_categroy_palette = {
-    'Accessories': '#1f77b4',             # Blue
-    'Audio': '#2ca02c',                   # Green
-    'Desktop': '#bcbd22',                 # Olive
-    'Laptop': '#ff7f0e',                  # Orange
-    'Smartphone': '#d62728',              # Red
-    'Tablet': '#9467bd',                  # Purple
-    'Subscription Service': "#17becf",    # Cyan
-    'Wearable': '#8c564b',                # Brown
-    'Streaming Device': '#e377c2',        # Pink
-    'Smart Speaker': '#7f7f7f',           # Gray
-}
 limit = 20
 sort_order = 'DESC'
 
@@ -135,7 +137,6 @@ in any product(s) perceived quality by customers.
 
 #%%
 # (1.c) Bar Chart: Top N Products by Revenue and Region
-Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
 limit = 20
 sort_order = 'DESC'
 
@@ -315,8 +316,8 @@ overall revenue.
 sort_order = 'ASC'
 def plot_category_revenue_by_year(category_revenue):
     # Drop the Total_Revenue column so it's not included in the bar
-    if "Total_Revenue" in category_revenue.columns:
-        category_revenue = category_revenue.drop(columns = ["Total_Revenue"])
+    if "Total_Revenue_Millions" in category_revenue.columns:
+        category_revenue = category_revenue.drop(columns = ["Total_Revenue_Millions"])
     
     # Set category names as index so they're used for y-axis
     category_revenue = category_revenue.set_index("category_name")
@@ -329,7 +330,7 @@ def plot_category_revenue_by_year(category_revenue):
     )
 
     plt.title('Revenue of Products by Category', fontsize=20, pad=20)
-    plt.xlabel('Total Revenue', fontsize=18)
+    plt.xlabel('Total Revenue (in Millions)', fontsize=18)
     plt.ylabel('Category', fontsize=18)
     plt.grid(axis='x')
     plt.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -342,10 +343,34 @@ plot_category_revenue_by_year(category_revenue)
 """
 
 DESCRIPTION:
-
+This code generates a visualization that shows Revenue by Category type.
+This aims to help provide groundwork to get a well rounded answer to
+Key Question (3), by giving a baseline of what global revenue looks like
+when broken up by Category.
 
 INSIGHT:
+This shows that the actual hardware makes up the vast bulk of the revenue 
+for the company. Coupled with findings from Key Question (1), we get more reason
+to focus efforts to expanding more efforts to boost revenue from subscription services.
+Key Question (1) revealed that globally, subscription services are very popular, but
+they don't make up very much of the overall revenue percentage. This indicates that they
+are undersaturated in the market at the moment, despite their popularity.
 
+"""
+
+#%%
+# (3.b) MISSING Line Graph: Category by Monthly Revenue
+
+
+"""
+
+DESCRIPTION:
+This code generates a visualization to show Monthly Revenue by Category type,
+helping to directly answer Key Question (3), by giving an idea of trends for product
+categories over time.
+
+INSIGHT:
+MISSING
 
 """
 
