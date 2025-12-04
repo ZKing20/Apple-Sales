@@ -375,7 +375,7 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
                     (Completed_Claims * 100) / NULLIF(Total_Sales, 0),         
                     0
                 ) AS DECIMAL(5,2)
-            ) AS Claims_Rate_Decimal,
+            ) AS Claims_Rate_Decimal
         FROM
             Claims_Rate
         ORDER BY 

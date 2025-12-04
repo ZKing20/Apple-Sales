@@ -23,13 +23,12 @@ sys.path.append(os.path.abspath
         )
 )
 from eda_queries import *
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Definitions used frequently
 Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
-consistent_categroy_palette = {             # Color palette matched to tab10 palette"
+consistent_category_palette = {             # Color palette matched to tab10 palette"
     'Accessories': '#1f77b4',             # Blue
     'Audio': '#2ca02c',                   # Green
     'Desktop': '#bcbd22',                 # Olive
@@ -70,7 +69,7 @@ def plot_top_products_revenue(top_products_revenue):
         x = 'Product_Name',
         y = 'Total_Revenue_Millions',
         hue = 'category_name',
-        palette = consistent_categroy_palette
+        palette = consistent_category_palette
     )
     plt.title(f'Top {limit} Products by Revenue')
     plt.xlabel('Product Name')
@@ -109,7 +108,7 @@ def plot_top_products_revenue(top_products_revenue):
         x = 'Product_Name',
         y = 'Total_Revenue_Millions',
         hue = 'category_name',
-        palette = consistent_categroy_palette
+        palette = consistent_category_palette
     )
     ax.set_xlabel('')
     ax.set_xticklabels([])
@@ -148,7 +147,7 @@ def plot_top_products_revenue_region(top_products_revenue_region):
         y = 'Total_Revenue_Millions',
         hue = 'category_name',
         errorbar = None,
-        palette = consistent_categroy_palette
+        palette = consistent_category_palette
     )
     plt.title(f'Top {limit} Products by Revenue ({region})')
     plt.xlabel('Product Name')
@@ -257,25 +256,24 @@ picture of the trends of the top revenue generating stores.
 
 INSIGHT:
 This shows that each store has fairly similar revenue, but the trends 
-are not very cleanly defined; a lot of static, seemingly brownian trend 
-lines indicates fairly consistent revenue but with unpredictable minor
-differences on a month to month basis aside from two noticeable trends.
-Revenue seems to slightly spike in every store around the holiday season
-(November - December). On the other hand, revenue seems to consistently
-fall in the Month of February for most if not all stores, most if not all 
-years. Keep reaping the benefits of selling a lot during the holiday 
-season, but maybe try a few targeted add campaigns for Valentine's Day
-to offset predictably slow months.
+are not very cleanly defined; a lot of static, very noisy lines indicates
+fairly consistent revenue but with unpredictable minor differences on a 
+month to month basis aside from two noticeable trends. Revenue seems to
+slightly spike in every store around the holiday season (November - December).
+On the other hand, revenue seems to consistently fall in the Month of February
+for most if not all stores, most if not all years. Keep reaping the benefits
+of selling a lot during the holiday season, but maybe try a few targeted add
+campaigns for Valentine's Day to offset predictably slow months.
 
 """
 
 #%%
 # (2.c) Line Graph: Regions by Monthly Revenue
 sort_order = 'DESC'
-def plot_top_regions_monthly_revenue(top_regions_data):
+def plot_regions_monthly_revenue(regions_data):
     plt.figure(figsize=(20,10))
     sns.lineplot(
-        data = top_regions_data,
+        data = regions_data,
         x = 'Year_Month',
         y = 'Monthly_Revenue',
         hue = 'Region',
@@ -290,8 +288,8 @@ def plot_top_regions_monthly_revenue(top_regions_data):
     plt.grid(True)
     plt.show()
 
-top_regions_data = load_regions_monthly_revenue(sort_order)
-plot_top_regions_monthly_revenue(top_regions_data)
+regions_data = load_regions_monthly_revenue(sort_order)
+plot_regions_monthly_revenue(regions_data)
 
 """
 
@@ -426,42 +424,6 @@ INSIGHT:
 """
 
 # %%
-# (5.a) Bar Chart: Claims Rate per Million by Store
-limit = 10
-sort_order = 'DESC'
-
-def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
-    plt.figure(figsize=(20,10))
-    sns.barplot(
-        data = claims_rate_store_revenue,
-        x = 'Store_Name',
-        y = 'claims_per_million',
-        hue = 'Region',
-        errorbar = None,
-        dodge = False,
-        palette = 'tab10'
-    )
-    plt.title('Claims per $1,000,000 by Store')
-    plt.xlabel('Store Name')
-    plt.ylabel('Claims Per Million')
-    plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.show()
-
-claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
-plot_claims_rate_vs_revenue(claims_rate_store_revenue)
-
-"""
-
-DESCRIPTION:
-
-
-INSIGHT:
-
-
-"""
-
-# %%
 # (5) Bar Chart: Claims Rate by Product
 limit = 25
 sort_order = 'DESC'
@@ -541,7 +503,7 @@ def plot_top_10_claims_heatmap(claims_product_store):
     plt.xlabel("Product")
     plt.ylabel("Store")
     plt.tight_layout()
-    plt.show
+    plt.show()
 claims_product_store = load_claims_rate_products_store(sort_order = 'DESC')
 plot_top_10_claims_heatmap(claims_product_store)
 
