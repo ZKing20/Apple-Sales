@@ -312,7 +312,7 @@ def load_category_monthly_revenue(sort_order: str):
 # Warranty and Product Quality
 
 #%%
-# (4) Claims Rate by Country
+# (4.a) Claims Rate by Country
 def load_claims_rate_country(limit: int, sort_order: str):
     df = con.execute(f"""
         SELECT
@@ -334,6 +334,35 @@ def load_claims_rate_country(limit: int, sort_order: str):
         GROUP BY
             st.Region,
             st.Country
+        ORDER BY
+            Claims_Rate {sort_order}
+        LIMIT {limit}
+    """).fetchdf()
+    return df
+
+#%%
+# (4.b) Claims Rate by Store
+def load_claims_rate_store(limit: int, sort_order: str):
+    df = con.execute(f"""
+        SELECT
+            CAST(
+                COALESCE(
+                    COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) 
+                     * 100 / NULLIF(SUM(s.quantity), 0), 
+                    0
+                ) AS DECIMAL(5,2)
+            ) AS Claims_Rate,
+            st.Store_Name,
+            st.Region
+        FROM
+            stores st
+        LEFT JOIN
+            sales s ON st.Store_ID = s.store_id
+        LEFT JOIN
+            warranty w ON s.sale_id = w.sale_id
+        GROUP BY
+            st.Store_Name,
+            st.Region
         ORDER BY
             Claims_Rate {sort_order}
         LIMIT {limit}

@@ -40,6 +40,14 @@ consistent_category_palette = {             # Color palette matched to tab10 pal
     'Streaming Device': '#e377c2',        # Pink
     'Smart Speaker': '#7f7f7f',           # Gray
 }
+consistent_region_palette = {
+    'North America': '#1f77b4',           # Blue
+    'South America': '#2ca02c',           # Green
+    'Europe': '#ff7f0e',                  # Orange
+    'Asia': '#d62728',                    # Red
+    'Middle East': '#9467bd',             # Purple
+    'Oceania': '#bcbd22',                 # Olive
+}
 # %%
 # Revenue Performance
 
@@ -233,6 +241,7 @@ def plot_top_store_monthly_revenue(top_store_data):
         x = 'Year_Month',
         y = 'Monthly_Revenue',
         hue = 'Region',
+        palette = consistent_region_palette,
         marker = 'o',
         errorbar = None
     )
@@ -277,6 +286,7 @@ def plot_regions_monthly_revenue(regions_data):
         x = 'Year_Month',
         y = 'Monthly_Revenue',
         hue = 'Region',
+        palette = consistent_region_palette,
         marker = 'o',
         errorbar = None
     )
@@ -422,7 +432,7 @@ high claim activity?
 """
 
 #%%
-# (4) Bar Chart: Claims Rate by Country 
+# (4.a) Bar Chart: Claims Rate by Country 
 limit = 19 # Only have 19 countries
 sort_order = 'DESC'
 
@@ -432,17 +442,59 @@ def plot_claims_rate_by_country(claims_rate_country):
         data = claims_rate_country,
         x = 'Country',
         y = 'Claims_Rate',
-        hue = 'Region'
+        hue = 'Region',
+        palette = consistent_region_palette
     )
     plt.title('Claims Rate by Country')
     plt.xlabel('Country')
-    plt.ylabel('Claims Rate')
+    plt.ylabel('Claims Rate (%)')
     plt.xticks(rotation=45, ha='right')
     plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()    
 
 claims_rate_country = load_claims_rate_country(limit, sort_order)
 plot_claims_rate_by_country(claims_rate_country)
+
+"""
+
+DESCRIPTION:
+This code generates a visualization that directly helps to answer
+Key Question (4) by showing a graph of the claims rate for every country
+we have data for, color coded by region to help see if regional trends
+are present.
+
+INSIGHT:
+What we see from the graph is that all of the countries have a claims
+rate around 0.12% - 0.14% (fairly negligible), and that none of the
+regions seem to be clumped together in an unusual way, just normal noise.
+This seems to show that no country in the data has particularly good
+or poor warranty claims.
+
+"""
+
+#%%
+# (4.b) Claims Rate by Store
+limit = 100
+sort_order = 'DESC'
+
+def plot_claims_rate_by_store(claims_rate_store):
+    plt.figure(figsize=(20,10))
+    sns.barplot(
+        data = claims_rate_store,
+        x = 'Store_Name',
+        y = 'Claims_Rate',
+        hue = 'Region',
+        palette = consistent_region_palette
+    )
+    plt.title('Claims Rate by Store')
+    plt.xlabel('Store')
+    plt.ylabel('Claims Rate (%)')
+    plt.xticks(rotation=45, ha='right')
+    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()    
+
+claims_rate_store = load_claims_rate_store(limit, sort_order)
+plot_claims_rate_by_store(claims_rate_store)
 
 """
 
@@ -468,7 +520,7 @@ def plot_claims_rate_by_product(claims_rate_product):
         hue = 'category_name',
         errorbar = None,
         dodge = False,
-        palette = 'tab10'
+        palette = consistent_category_palette
     )
     plt.title(f'Top {limit} Products by Claims Rate')
     plt.xlabel('Product Name')
@@ -577,7 +629,7 @@ def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
         hue = 'Region',
         errorbar = None,
         dodge = False,
-        palette = 'tab10'
+        palette = consistent_region_palette
     )
     plt.title('Claims per $1,000,000 by Store')
     plt.xlabel('Store Name')
@@ -609,7 +661,8 @@ def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
             y = 'claims_per_thousand',
             size = 'units_sold',
             sizes = (20, 300),
-            hue = 'Region'
+            hue = 'Region',
+            palette = consistent_region_palette
         )
         plt.xlabel('Total Revenue')
         plt.ylabel('Claims per $1000')
