@@ -21,13 +21,14 @@ sys.path.append(os.path.abspath
         (os.path.join
             (os.getcwd(), '..', 'Scripts')
         )
-)
+                )
 from eda_queries import *
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Definitions used frequently
 Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
+
 consistent_category_palette = {             # Color palette matched to tab10 palette"
     'Accessories': '#1f77b4',             # Blue
     'Audio': '#2ca02c',                   # Green
@@ -40,6 +41,7 @@ consistent_category_palette = {             # Color palette matched to tab10 pal
     'Streaming Device': '#e377c2',        # Pink
     'Smart Speaker': '#7f7f7f',           # Gray
 }
+
 consistent_region_palette = {
     'North America': '#1f77b4',           # Blue
     'South America': '#2ca02c',           # Green
@@ -499,10 +501,16 @@ plot_claims_rate_by_store(claims_rate_store)
 """
 
 DESCRIPTION:
-
+This code generates a visualizations that directly helps to answer 
+Key Question (4) by showing the exact claims rate for the stores. 
 
 INSIGHT:
-
+Even when going for a fairly large scope (n = 100) of stores, we see 
+that the claims rate is around 0.11% - 0.17% (also fairly negligible).
+With this claims rate being similar to the claims rate per country,
+we have pretty good reason to suspect that most of the reason for the
+claims Apple does have are due to issues at the manufacturing level,
+not due to any particular practices by any store or country.
 
 """
 

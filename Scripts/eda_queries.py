@@ -209,6 +209,20 @@ def load_regions_monthly_revenue(sort_order: str):
 
 # %%
 # (3.a) Revenue by Category
+
+"""
+
+DISCLAIMER:
+This function DOES hard code in the years, which may not be generally
+considered 'best practice'. I am aware of this, but have chose to write
+the function in this way solely because it is a static dataset that will
+never recieve any updates for future years. Additionally, stylistically
+this project tends to use Python for mainly plotting purposes, and using
+SQL to do all of the heavy lifting. I wanted to keep with that style, and
+avoid doing aggregations in Python when it could be done in SQL.
+
+""" 
+
 def load_category_revenue_by_year(sort_order: str):
     df = con.execute(f"""
         WITH yearly AS (
