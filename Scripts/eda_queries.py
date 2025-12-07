@@ -230,24 +230,24 @@ def load_category_revenue_by_year(sort_order: str):
                 c.category_name,
                 SUM(
                     CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2020
-                    THEN s.quantity * p.price ELSE 0 END
-                ) AS revenue_2020,
+                    THEN s.quantity * p.Price ELSE 0 END
+                ) / 1000000 AS revenue_2020,
                 SUM(
                     CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2021
-                    THEN s.quantity * p.price ELSE 0 END
-                ) AS revenue_2021,
+                    THEN s.quantity * p.Price ELSE 0 END
+                ) / 1000000 AS revenue_2021,
                 SUM(
                     CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2022
-                    THEN s.quantity * p.price ELSE 0 END
-                ) AS revenue_2022,
+                    THEN s.quantity * p.Price ELSE 0 END
+                ) / 1000000 AS revenue_2022,
                 SUM(
                     CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2023
-                    THEN s.quantity * p.price ELSE 0 END
-                ) AS revenue_2023,
+                    THEN s.quantity * p.Price ELSE 0 END
+                ) / 1000000 AS revenue_2023,
                 SUM(
                     CASE WHEN EXTRACT(YEAR FROM strptime(s.sale_date, '%d-%m-%Y')) = 2024
-                    THEN s.quantity * p.price ELSE 0 END
-                ) AS revenue_2024
+                    THEN s.quantity * p.Price ELSE 0 END
+                ) / 1000000 AS revenue_2024
             FROM
                 sales s
             JOIN 
@@ -264,7 +264,7 @@ def load_category_revenue_by_year(sort_order: str):
             revenue_2022,
             revenue_2023,
             revenue_2024,
-            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024) / 1000000
+            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024)
                 AS Total_Revenue_Millions
         FROM 
             yearly
@@ -554,3 +554,19 @@ def load_monthly_claims_revenue_by_store():
             Year_Month
     """).fetchdf()
     return df
+
+#%%
+# Testing
+if __name__ == '__main__':
+    # Check for unparsable dates
+    def check_date_parsing():
+        df = con.execute("""
+            SELECT 
+                COUNT(*) as Total_Rows,
+                COUNT(TRY_STRPTIME(sale_date, '%d-%m-%Y')) as Parsed_Successfully,
+                Total_Rows - Parsed_Successfully as Failed_Rows
+            FROM sales
+        """).fetchdf()
+        print(df)
+    check_date_parsing()
+# %%
