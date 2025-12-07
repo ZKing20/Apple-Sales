@@ -29,8 +29,8 @@ def load_products_revenue(limit: int, sort_order: str):
         SELECT 
             p.Product_Name,
             c.category_name,
-            SUM(s.quantity * p.Price) / 1000000 as Total_Revenue_Millions,
-            COUNT(*) as Units_Sold
+            SUM(s.quantity * p.Price) / 1000000 AS Total_Revenue_Millions,
+            COUNT(*) AS Units_Sold
         FROM 
             sales s
         JOIN 
@@ -56,7 +56,7 @@ def load_products_revenue_region(limit: int, sort_order: str, region: str):
             p.Product_Name,
             c.category_name,
             st.Region,
-            SUM(s.quantity * p.Price) / 1000000 as Total_Revenue_Millions,
+            SUM(s.quantity * p.Price) / 1000000 AS Total_Revenue_Millions,
             COUNT(*) as Units_Sold
         FROM 
             sales s
@@ -264,7 +264,7 @@ def load_category_revenue_by_year(sort_order: str):
             revenue_2022,
             revenue_2023,
             revenue_2024,
-            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024)/1000000 
+            (revenue_2020 + revenue_2021 + revenue_2022 + revenue_2023 + revenue_2024) / 1000000
                 AS Total_Revenue_Millions
         FROM 
             yearly
