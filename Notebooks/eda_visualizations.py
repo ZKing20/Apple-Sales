@@ -515,7 +515,7 @@ not due to any particular practices by any store or country.
 """
 
 # %%
-# (5) Bar Chart: Claims Rate by Product
+# (5.a) Bar Chart: Claims Rate by Product
 limit = 25
 sort_order = 'DESC'
 
@@ -549,6 +549,39 @@ INSIGHT:
 
 
 """
+
+# %%
+# (5.b) Scatterplot: Claims Rate vs. Total Units Sold
+def plot_claims_rate_vs_units(claims_rate_vs_units):
+        plt.figure(figsize=(20,10))
+        sns.scatterplot(
+            data = claims_rate_vs_units,
+            x = 'Total_Sales',
+            y = 'Claims_Rate_Decimal',
+            size = 'Total_Sales',
+            sizes = (20, 300),
+            hue = 'category_name',
+            palette = consistent_category_palette
+        )
+        plt.xlabel('Total Units Sold')
+        plt.ylabel('Claims Rate (%)')
+        plt.title('Claims Rate vs Units Sold')
+        plt.legend(title='Claims Rate (%)', bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.show()
+
+claims_rate_vs_units = load_claims_rate_vs_units()
+plot_claims_rate_vs_units(claims_rate_vs_units)
+
+"""
+
+DESCRIPTION:
+
+
+INSIGHT:
+
+
+"""
+
 
 #%%
 # (6) Heatmap: Claims Rate by Product and Store
@@ -667,7 +700,7 @@ def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
             data = monthly_claims_revenue_by_store,
             x = 'revenue',
             y = 'claims_per_thousand',
-            size = 'units_sold',
+            size = 'Total_Sales',
             sizes = (20, 300),
             hue = 'Region',
             palette = consistent_region_palette

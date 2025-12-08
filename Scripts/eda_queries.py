@@ -384,7 +384,7 @@ def load_claims_rate_store(limit: int, sort_order: str):
     return df
 
 # %%
-# (5) Claims Rate by Product
+# (5.a) Claims Rate by Product
 def load_claims_rate_product(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -423,6 +423,49 @@ def load_claims_rate_product(limit: int, sort_order: str):
         ORDER BY 
             Claims_Rate_Decimal {sort_order}
         LIMIT {limit}
+    """).fetchdf()
+    return df
+
+# %%
+# (5.b) Monthly Claims vs. Revenue by Store
+def load_claims_rate_vs_units():
+    df = con.execute("""
+        WITH Claims_Rate AS (
+            SELECT
+                p.Product_ID,
+                p.Product_Name,
+                c.category_name,
+                SUM(s.quantity) AS Total_Sales,
+                COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims
+            FROM
+                products p
+            LEFT JOIN
+                category c ON p.Category_ID = c.category_id
+            LEFT JOIN 
+                sales s ON p.Product_ID = s.product_id
+            LEFT JOIN
+                warranty w ON s.sale_id = w.sale_id
+            GROUP BY
+                p.Product_ID,
+                p.Product_Name,
+                c.category_name
+        )
+        SELECT
+            Product_ID,
+            Product_Name,
+            category_name,
+            Completed_Claims,
+            Total_Sales,
+            CAST(
+                COALESCE(
+                    (Completed_Claims * 100) / NULLIF(Total_Sales, 0),         
+                    0
+                ) AS DECIMAL(5,2)
+            ) AS Claims_Rate_Decimal 
+        FROM
+            Claims_Rate
+        ORDER BY 
+            Claims_Rate_Decimal
     """).fetchdf()
     return df
 
@@ -531,7 +574,7 @@ def load_monthly_claims_revenue_by_store():
             st.Region,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
             SUM(s.quantity * p.price) AS revenue,
-            SUM(s.quantity) AS units_sold,
+            SUM(s.quantity) AS Total_Sales,
             COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims,
             1000 * Completed_Claims / revenue AS claims_per_thousand
         FROM 
