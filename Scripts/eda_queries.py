@@ -451,10 +451,8 @@ def load_claims_rate_vs_units():
                 c.category_name
         )
         SELECT
-            Product_ID,
             Product_Name,
             category_name,
-            Completed_Claims,
             Total_Sales,
             CAST(
                 COALESCE(

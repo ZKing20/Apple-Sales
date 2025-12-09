@@ -328,11 +328,19 @@ overall revenue.
 sort_order = 'ASC'
 def plot_category_revenue_by_year(category_revenue):
     # Drop the Total_Revenue column so it's not included in the bar
-    if "Total_Revenue_Millions" in category_revenue.columns:
-        category_revenue = category_revenue.drop(columns = ["Total_Revenue_Millions"])
-    
+    category_revenue = category_revenue.drop(columns = ["Total_Revenue_Millions"])
+    category_revenue = category_revenue.rename(columns = {
+        'category_name': 'Category Name',
+        'revenue_2020': '2020',
+        'revenue_2021': '2021',
+        'revenue_2022': '2022',
+        'revenue_2023': '2023',
+        'revenue_2024': '2024',
+        'Total_Revenue_Millions': 'Total Revenue (Millions)'
+    })
+
     # Set category names as index so they're used for y-axis
-    category_revenue = category_revenue.set_index("category_name")
+    category_revenue = category_revenue.set_index("Category Name")
     
     # Plot
     category_revenue.plot(
@@ -345,7 +353,7 @@ def plot_category_revenue_by_year(category_revenue):
     plt.xlabel('Total Revenue (in Millions)', fontsize=18)
     plt.ylabel('Category', fontsize=18)
     plt.grid(axis='x')
-    plt.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(title='Year', bbox_to_anchor=(1.05, 1, ), loc='upper left', fontsize = 'large')
     plt.tight_layout()
     plt.show()
 
@@ -564,20 +572,26 @@ occur across products.
 # %%
 # (5.b) Scatterplot: Claims Rate vs. Total Units Sold
 def plot_claims_rate_vs_units(claims_rate_vs_units):
+        claims_rate_vs_units = claims_rate_vs_units.rename(columns = {
+            'Product_Name': 'Product Name',
+            'category_name': 'Category Name',
+            'Total_Sales': 'Total Sales',
+            'Claims_Rate_Decimal': 'Claims Rate'
+        })
         plt.figure(figsize=(20,10))
         sns.scatterplot(
             data = claims_rate_vs_units,
-            x = 'Total_Sales',
-            y = 'Claims_Rate_Decimal',
-            size = 'Total_Sales',
+            x = 'Total Sales',
+            y = 'Claims Rate',
+            size = 'Total Sales',
             sizes = (20, 300),
-            hue = 'category_name',
+            hue = 'Category Name',
             palette = consistent_category_palette
         )
         plt.xlabel('Total Units Sold')
         plt.ylabel('Claims Rate (%)')
         plt.title('Claims Rate vs Units Sold')
-        plt.legend(title='Claims Rate (%)', bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol = 2)
         plt.show()
 
 claims_rate_vs_units = load_claims_rate_vs_units()
