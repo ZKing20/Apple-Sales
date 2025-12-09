@@ -50,6 +50,7 @@ consistent_region_palette = {
     'Middle East': '#9467bd',             # Purple
     'Oceania': '#bcbd22',                 # Olive
 }
+
 # %%
 # Revenue Performance
 
@@ -67,6 +68,7 @@ Key Question (3):
 Which product categories show strong growth or decline over time?
 
 """
+
 #%%
 # (1.a) Bar Chart: Top N Products by Global Revenue (Small Scope)
 limit = 20
@@ -516,7 +518,7 @@ not due to any particular practices by any store or country.
 
 # %%
 # (5.a) Bar Chart: Claims Rate by Product
-limit = 25
+limit = 100
 sort_order = 'DESC'
 
 def plot_claims_rate_by_product(claims_rate_product):
@@ -543,10 +545,19 @@ plot_claims_rate_by_product(claims_rate_product)
 """
 
 DESCRIPTION:
-
+This code generates a visualization that xirectly answers part of
+Key Question 5, by showing the top products by claims rates, as the rate
+is more of a relevant metric than raw claims counts.
 
 INSIGHT:
-
+The direct answer to the question is that the Mac Pro (Rack) hsa the
+highest claims rate, followed by the MacBook (read note in README about
+data integrity for more information about the vague naming), and
+iPhone 13 Pro. The overall bigger takeaway however, is that the products
+are, just like our stores and regions, fairly noisy, with most products
+falling in the 0.10% - 0.16% range, and seem to indicate that the small
+amount of claims we do see are due to slight manufacturing issues that
+occur across products. 
 
 """
 

@@ -58,8 +58,15 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 
 ├── README.md                  (Project documentation)
 
+## Notes
+### Data Integrity
+I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price point ($1149) and release date. While the name is rather vague, the product accounts for $73M in revenue (1.2%) of total. To preserve data integrity and financial accuracy, I decided that it made the most sense for this product to be included in the dataset despite the ambiguous naming. Note that this dataset is synthetic data gathered from Kaggle, so it isn't as simple as just looking up which product released on the given release date.
+
+### Security
+This project does write SQL in a way that DOES allow for SQL injections to occur. The reason I have decided to allow this is simpmly to make the SQL more readable, as security is not an issue with this data, given that it is sythetic and does not represent anything from the real world.
+
 ## Status
-Work in progress - visualization and final insights in progress.
+Work in progress - 5 of 8 Key Questions Answered
 
 All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
 
