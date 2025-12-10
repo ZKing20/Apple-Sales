@@ -468,7 +468,7 @@ def load_claims_rate_vs_units():
     return df
 
 #%%
-#  (6) Claims Rate by Product and Store
+#  (6.a) Claims Rate by Product and Store
 def load_claims_rate_products_store(sort_order: str = 'ASC'):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -512,6 +512,9 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
             Claims_Rate_Decimal {sort_order}
     """).fetchdf()
     return df
+
+#%%
+# MISSING (6.b) Outlier Table
 
 #%%
 # Revenue vs Quality

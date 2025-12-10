@@ -574,7 +574,7 @@ occur across products.
 def plot_claims_rate_vs_units(claims_rate_vs_units):
         claims_rate_vs_units = claims_rate_vs_units.rename(columns = {
             'Product_Name': 'Product Name',
-            'category_name': 'Category Name',
+            'category_name': 'Category',
             'Total_Sales': 'Total Sales',
             'Claims_Rate_Decimal': 'Claims Rate'
         })
@@ -585,7 +585,7 @@ def plot_claims_rate_vs_units(claims_rate_vs_units):
             y = 'Claims Rate',
             size = 'Total Sales',
             sizes = (20, 300),
-            hue = 'Category Name',
+            hue = 'Category',
             palette = consistent_category_palette
         )
         plt.xlabel('Total Units Sold')
@@ -617,7 +617,7 @@ warranty issues are arising at the manufacturer level at a rate of around
 
 
 #%%
-# (6) Heatmap: Claims Rate by Product and Store
+# (6.a) Heatmap: Claims Rate by Product and Store
 def plot_top_10_claims_heatmap(claims_product_store):
     top_stores = (
         claims_product_store.groupby("Store_Name")["Claims_Rate_Decimal"]
@@ -663,6 +663,24 @@ def plot_top_10_claims_heatmap(claims_product_store):
     plt.show()
 claims_product_store = load_claims_rate_products_store(sort_order = 'DESC')
 plot_top_10_claims_heatmap(claims_product_store)
+
+"""
+
+DESCRIPTION:
+This code generates a visualization that directly answers Key Question 6.
+It shows a heat map that gives the top 10 stores and products by warranty claims.
+
+INSIGHT:
+This visualization shows exactly what we suspected based on the insights gained from
+other visualizations. The claims rates seems to be sporadic, with no discernible patterns
+being immediately obvious. This again help support the hypothesis that the root cause for
+warranty issues lies at the manufacturing level.
+
+"""
+
+#%%
+# MISSING (6.b) Outlier Table
+
 
 """
 
