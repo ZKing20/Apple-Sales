@@ -547,6 +547,7 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
             Store_Name,
             Country,
             Region,
+            Total_Revenue / 1000000 AS Total_Revenue,
             CAST(
                 COALESCE(
                     (Completed_Claims * 1000000) / NULLIF(Total_Revenue, 0),         
@@ -571,10 +572,10 @@ def load_monthly_claims_revenue_by_store():
             st.Country,
             st.Region,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
-            SUM(s.quantity * p.price) AS revenue,
+            SUM(s.quantity * p.price) / 1000000 AS revenue_millions,
             SUM(s.quantity) AS Total_Sales,
             COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims,
-            1000 * Completed_Claims / revenue AS claims_per_thousand
+            1000000 * Completed_Claims / SUM(s.quantity * p.price) AS claims_per_million
         FROM 
             sales s
         JOIN 
@@ -590,7 +591,7 @@ def load_monthly_claims_revenue_by_store():
             st.Region,
             Year_Month    
         ORDER BY 
-            claims_per_thousand,
+            claims_per_million,
             st.Store_ID,
             Year_Month
     """).fetchdf()

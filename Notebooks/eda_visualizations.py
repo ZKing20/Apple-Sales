@@ -544,7 +544,7 @@ def plot_claims_rate_by_product(claims_rate_product):
     plt.xlabel('Product Name')
     plt.ylabel('Claims Rate (%)')
     plt.xticks(rotation = 45, ha = 'right')
-    plt.legend(title='Product Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
 claims_rate_product = load_claims_rate_product(limit, sort_order)
@@ -553,7 +553,7 @@ plot_claims_rate_by_product(claims_rate_product)
 """
 
 DESCRIPTION:
-This code generates a visualization that xirectly answers part of
+This code generates a visualization that directly answers part of
 Key Question 5, by showing the top products by claims rates, as the rate
 is more of a relevant metric than raw claims counts.
 
@@ -591,7 +591,7 @@ def plot_claims_rate_vs_units(claims_rate_vs_units):
         plt.xlabel('Total Units Sold')
         plt.ylabel('Claims Rate (%)')
         plt.title('Claims Rate vs Units Sold')
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol = 2)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
         plt.show()
 
 claims_rate_vs_units = load_claims_rate_vs_units()
@@ -600,10 +600,18 @@ plot_claims_rate_vs_units(claims_rate_vs_units)
 """
 
 DESCRIPTION:
-
+This code generates a visualization that directly answers part of
+Key Question 5, by showing a scatterplot relating claims rate to
+sales volume.
 
 INSIGHT:
-
+This also goes to show that there is a great amount of noise, with no
+clear patterns arising within any product categories, or even any
+particular product. Again, we see that the overall claims rate is between
+0.9% - 0.17%, which is similar to the range we have been seeing across
+other categories. This again gives more evidence to the theory that
+warranty issues are arising at the manufacturer level at a rate of around
+0.1% - 0.2%.
 
 """
 
@@ -683,25 +691,29 @@ claims, and what sets them apart?
 
 # %%
 # (7) Bar Chart: Claims Rate per Million by Store
-limit = 10
+limit = 100
 sort_order = 'DESC'
 
 def plot_claims_rate_vs_revenue(claims_rate_store_revenue):
+    claims_rate_store_revenue = claims_rate_store_revenue.rename(columns = {
+            'Total_Revenue': 'Total Revenue'
+        })
     plt.figure(figsize=(20,10))
-    sns.barplot(
+    sns.scatterplot(
         data = claims_rate_store_revenue,
-        x = 'Store_Name',
+        x = 'Total Revenue',
         y = 'claims_per_million',
+        size = 'Total Revenue',
+        sizes = (20,300),
         hue = 'Region',
-        errorbar = None,
-        dodge = False,
         palette = consistent_region_palette
     )
     plt.title('Claims per $1,000,000 by Store')
-    plt.xlabel('Store Name')
+    plt.xlabel('Total Revenue (in Millions)')
     plt.ylabel('Claims Per Million')
     plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Region', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
+    plt.grid(True)
     plt.show()
 
 claims_rate_store_revenue = load_claims_vs_revenue_by_store(limit, sort_order)
@@ -710,10 +722,15 @@ plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 """
 
 DESCRIPTION:
-
+This code generates a visualization that directly answersKey Question 7
+by showing a scatterplot relating claims rate to revenue by store.
+sales volume.
 
 INSIGHT:
-
+This data shows that there is no trend line to be drawn between higher
+earning stores having higher claims rates, or vice versa. This suggests
+that store operations scale efficiently, with high-volume stores maintaining
+the same low claims rate as smaller stores.
 
 """
 
@@ -721,19 +738,22 @@ INSIGHT:
 # (8) Scatterplot: Claims Rate vs. Total Revenue
 def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
+        monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {
+            'Total_Sales': 'Total Sales'
+        })
         sns.scatterplot(
             data = monthly_claims_revenue_by_store,
-            x = 'revenue',
-            y = 'claims_per_thousand',
-            size = 'Total_Sales',
+            x = 'revenue_millions',
+            y = 'claims_per_million',
+            size = 'Total Sales',
             sizes = (20, 300),
             hue = 'Region',
             palette = consistent_region_palette
         )
-        plt.xlabel('Total Revenue')
-        plt.ylabel('Claims per $1000')
-        plt.title('Claims per $1000 vs Revenue by Store')
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.xlabel('Total Revenue (in Millions)')
+        plt.ylabel('Claims per $1M')
+        plt.title('Claims per $1M vs Revenue by Store')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
         plt.show()
 
 monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
@@ -753,4 +773,3 @@ INSIGHT:
 # Testing
 if __name__ == '__main__':
     None
-# %%
