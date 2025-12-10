@@ -679,8 +679,38 @@ warranty issues lies at the manufacturing level.
 """
 
 #%%
-# MISSING (6.b) Outlier Table
+#(6.b) Outlier Table
+min_units = 50
+limit = 10
 
+def plot_outlier_table(outlier_table):
+    fig, ax = plt.subplots(figsize=(20,10))
+    ax.axis('tight')
+    ax.axis('off')
+
+    table = ax.table(
+        cellText=outlier_table.values,
+        colLabels=outlier_table.columns,
+        cellLoc='center',
+        loc='center'
+    )
+
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.2, 1.2)
+
+    for (row, _), cell in table.get_celld().items():
+        if row == 0:
+            cell.set_text_props(weight='bold', color='white', verticalalignment='center')
+            cell.set_facecolor('#40466e')
+        else:
+            cell.set_facecolor('#f5f5f5')
+    plt.title(f"Outliers: Top {limit} Stores by Claims Rate (Minimum {min_units} Sales)", weight='bold', pad=None)
+    fig.tight_layout()
+    plt.show()
+
+outlier_table = load_outliers(min_units, limit)
+plot_outlier_table(outlier_table)
 
 """
 
@@ -699,16 +729,13 @@ INSIGHT:
 
 Key Question (7):
 Is there a relationship between a store's revenue and its 
-warranty claim rate?
-
-Key Question (8):
-Which stores generate strong revenue while maintaining low warranty 
-claims, and what sets them apart?
+warranty claim rate, and which stores manage to generate strong
+revenue while maintaining low warranty claims?
 
 """
 
 # %%
-# (7) Bar Chart: Claims Rate per Million by Store
+# (7.a) Bar Chart: Claims Rate per Million by Store
 limit = 100
 sort_order = 'DESC'
 
@@ -753,7 +780,7 @@ the same low claims rate as smaller stores.
 """
 
 # %%
-# (8) Scatterplot: Claims Rate vs. Total Revenue
+# (7.b) Scatterplot: Claims Rate vs. Total Revenue
 def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
         monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {

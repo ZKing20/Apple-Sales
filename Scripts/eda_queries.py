@@ -514,13 +514,44 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
     return df
 
 #%%
-# MISSING (6.b) Outlier Table
+# (6.b) Outlier Table
+def load_outliers(min_units: int, limit: int):
+    df = con.execute(f"""
+        SELECT
+            st.Store_Name,
+            p.Product_Name,
+            st.Region,
+            SUM(s.quantity) AS Units_Sold,
+            COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Claims_Count,
+            CAST(
+                (COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) * 100.0) / SUM(s.quantity)
+                AS DECIMAL(5,2)
+                ) AS Claims_Rate_Decimal
+        FROM
+            sales s
+        JOIN
+            stores st ON s.store_id = st.Store_ID
+        JOIN
+            products p ON s.product_id = p.Product_ID
+        LEFT JOIN
+            warranty w ON s.sale_id = w.sale_id
+        GROUP BY 
+            st.Store_Name,
+            p.Product_Name,
+            st.Region
+        HAVING
+            Units_Sold >= {min_units}
+        ORDER BY
+            Claims_Rate_Decimal DESC
+        LIMIT {limit}
+    """).fetchdf()
+    return df
 
 #%%
 # Revenue vs Quality
 
 #%%
-# (7) Claims Rate per Million by Store
+# (7.a) Claims Rate per Million by Store
 def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH claims_per_revenue AS (
@@ -566,7 +597,7 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
     return df
 
 # %%
-# (8) Monthly Claims vs. Revenue by Store
+# (7.b) Monthly Claims vs. Revenue by Store
 def load_monthly_claims_revenue_by_store():
     df = con.execute("""
         SELECT
@@ -603,15 +634,4 @@ def load_monthly_claims_revenue_by_store():
 #%%
 # Testing
 if __name__ == '__main__':
-    # Check for unparsable dates
-    def check_date_parsing():
-        df = con.execute("""
-            SELECT 
-                COUNT(*) as Total_Rows,
-                COUNT(TRY_STRPTIME(sale_date, '%d-%m-%Y')) as Parsed_Successfully,
-                Total_Rows - Parsed_Successfully as Failed_Rows
-            FROM sales
-        """).fetchdf()
-        print(df)
-    check_date_parsing()
-# %%
+    None

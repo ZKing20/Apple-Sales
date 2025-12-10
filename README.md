@@ -21,8 +21,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 6. **Are there specific product–store combinations that show unusually high claim activity?**
 
 ### **Revenue vs. Quality**
-7. **Is there a relationship between a store’s revenue and its warranty claim rate?**
-8. **Which stores generate strong revenue while maintaining low warranty claims, and what sets them apart?**
+7. **Is there a relationship between a store’s revenue and its warranty claim rate, and which stores manage to generate strong revenue while maintaining low warranty claims?**
 
 ## Results
 (Will fill in after Notebook Completion, and when insights are finalized)
