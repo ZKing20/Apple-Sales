@@ -214,12 +214,13 @@ def load_regions_monthly_revenue(sort_order: str):
 
 DISCLAIMER:
 This function DOES hard code in the years, which may not be generally
-considered 'best practice'. I am aware of this, but have chose to write
+considered 'best practice'. I am aware of this, but have chosen to write
 the function in this way solely because it is a static dataset that will
 never recieve any updates for future years. Additionally, stylistically
-this project tends to use Python for mainly plotting purposes, and using
-SQL to do all of the heavy lifting. I wanted to keep with that style, and
-avoid doing aggregations in Python when it could be done in SQL.
+this project tends to use Python mainly for plotting purposes, and uses
+SQL to do all of the heavy lifting. I wanted to keep consistent with that
+style, and avoid doing aggregations in Python when it could be done in
+SQL.
 
 """ 
 
@@ -384,7 +385,7 @@ def load_claims_rate_store(limit: int, sort_order: str):
     return df
 
 # %%
-# (5.a) Claims Rate by Product
+# (5.a/b) Claims Rate by Product
 def load_claims_rate_product(limit: int, sort_order: str):
     df = con.execute(f"""
         WITH Claims_Rate AS (
@@ -427,7 +428,7 @@ def load_claims_rate_product(limit: int, sort_order: str):
     return df
 
 # %%
-# (5.b) Monthly Claims vs. Revenue by Store
+# (5.c) Monthly Claims vs. Revenue by Store
 def load_claims_rate_vs_units():
     df = con.execute("""
         WITH Claims_Rate AS (

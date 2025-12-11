@@ -525,8 +525,8 @@ not due to any particular practices by any store or country.
 """
 
 # %%
-# (5.a) Bar Chart: Claims Rate by Product
-limit = 100
+# (5.a) Bar Chart: Claims Rate by Product (Small Scope)
+limit = 20
 sort_order = 'DESC'
 
 def plot_claims_rate_by_product(claims_rate_product):
@@ -554,23 +554,59 @@ plot_claims_rate_by_product(claims_rate_product)
 
 DESCRIPTION:
 This code generates a visualization that directly answers part of
-Key Question 5, by showing the top products by claims rates, as the rate
-is more of a relevant metric than raw claims counts.
+Key Question 5, by showing the top 20 products by claims rates.
 
 INSIGHT:
 The direct answer to the question is that the Mac Pro (Rack) hsa the
 highest claims rate, followed by the MacBook (read note in README about
 data integrity for more information about the vague naming), and
 iPhone 13 Pro. The overall bigger takeaway however, is that the products
-are, just like our stores and regions, fairly noisy, with most products
-falling in the 0.10% - 0.16% range, and seem to indicate that the small
-amount of claims we do see are due to slight manufacturing issues that
-occur across products. 
+are, just like our stores and regions, fairly noisy.
 
 """
 
 # %%
-# (5.b) Scatterplot: Claims Rate vs. Total Units Sold
+# (5.b) Bar Chart: Claims Rate by Product (Wide Scope)
+limit = 100
+sort_order = 'DESC'
+
+def plot_claims_rate_by_product(claims_rate_product):
+    plt.figure(figsize=(20,10))
+    sns.barplot(
+        data = claims_rate_product,
+        x = 'Product_Name',
+        y = 'Claims_Rate_Decimal',
+        hue = 'category_name',
+        errorbar = None,
+        dodge = False,
+        palette = consistent_category_palette
+    )
+    plt.title(f'Top {limit} Products by Claims Rate')
+    plt.xlabel('Product Name')
+    plt.ylabel('Claims Rate (%)')
+    plt.xticks(rotation = 45, ha = 'right')
+    plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+claims_rate_product = load_claims_rate_product(limit, sort_order)
+plot_claims_rate_by_product(claims_rate_product)
+
+"""
+
+DESCRIPTION:
+This code generates a visualization that helps to flesh out the previous
+answer to Key Question 5, by providing a larger scope to show a more full
+range of the claims rates the products have.
+
+INSIGHT:
+To be specific, most products fall in the 0.10% - 0.16% range, which
+seems to indicate that the small amount of claims we do see are due to
+manufacturing issues that occur across products.
+
+"""
+
+# %%
+# (5.c) Scatterplot: Claims Rate vs. Total Units Sold
 def plot_claims_rate_vs_units(claims_rate_vs_units):
         claims_rate_vs_units = claims_rate_vs_units.rename(columns = {
             'Product_Name': 'Product Name',
@@ -750,7 +786,7 @@ revenue while maintaining low warranty claims?
 """
 
 # %%
-# (7.a) Bar Chart: Claims Rate per Million by Store
+# (7.a) Scatterplot: Claims Rate per Million by Store
 limit = 100
 sort_order = 'DESC'
 
