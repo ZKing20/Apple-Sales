@@ -868,4 +868,29 @@ INSIGHT:
 #%%
 # Testing
 if __name__ == '__main__':
-    None
+    def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
+        plt.figure(figsize=(20,10))
+        monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {
+            'revenue_millions': 'Revenue (in Millions)'
+        })
+        sns.lineplot(
+            data = monthly_claims_revenue_by_store,
+            x = 'Year_Month',
+            y = 'claims_per_million',
+            marker = 'o',
+            size = 'Revenue (in Millions)',
+            sizes = (.5, 3),
+            hue = 'Region',
+            palette = consistent_region_palette,
+            errorbar = None
+        )
+        plt.xlabel('Date')
+        plt.ylabel('Claims per $1M')
+        plt.xticks(rotation=45, ha='right')
+        plt.title('Monthly Claims per $1M vs Revenue by Store')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
+        plt.grid(True)
+        plt.show()
+
+    monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+    plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)

@@ -604,7 +604,6 @@ def load_monthly_claims_revenue_by_store():
         SELECT
             st.Store_ID,
             st.Store_Name,
-            st.Country,
             st.Region,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
             SUM(s.quantity * p.price) / 1000000 AS revenue_millions,
@@ -622,12 +621,10 @@ def load_monthly_claims_revenue_by_store():
         GROUP BY 
             st.Store_ID,
             st.Store_Name,
-            st.Country,
             st.Region,
             Year_Month    
         ORDER BY 
             claims_per_million,
-            st.Store_ID,
             Year_Month
     """).fetchdf()
     return df
