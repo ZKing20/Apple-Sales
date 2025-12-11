@@ -521,7 +521,7 @@ def load_outliers(min_units: int, limit: int):
             st.Store_Name,
             p.Product_Name,
             st.Region,
-            SUM(s.quantity) AS Units_Sold,
+            CAST(SUM(s.quantity) AS INT) AS Units_Sold,
             COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Claims_Count,
             CAST(
                 (COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) * 100.0) / SUM(s.quantity)

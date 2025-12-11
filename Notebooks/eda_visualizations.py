@@ -576,13 +576,13 @@ def plot_claims_rate_vs_units(claims_rate_vs_units):
             'Product_Name': 'Product Name',
             'category_name': 'Category',
             'Total_Sales': 'Total Sales',
-            'Claims_Rate_Decimal': 'Claims Rate'
+            'Claims_Rate_Decimal': 'Claims Rate (%)'
         })
         plt.figure(figsize=(20,10))
         sns.scatterplot(
             data = claims_rate_vs_units,
             x = 'Total Sales',
-            y = 'Claims Rate',
+            y = 'Claims Rate (%)',
             size = 'Total Sales',
             sizes = (20, 300),
             hue = 'Category',
@@ -680,11 +680,19 @@ warranty issues lies at the manufacturing level.
 
 #%%
 #(6.b) Outlier Table
-min_units = 50
 limit = 10
+min_units = 50
+
 
 def plot_outlier_table(outlier_table):
-    fig, ax = plt.subplots(figsize=(20,10))
+    outlier_table = outlier_table.rename(columns = {
+            'Store_Name': 'Store Name',
+            'Product_Name': 'Product Name',
+            'Units_Sold': 'Total Units Sold',
+            'Claims_Count': 'Total Claims',
+            'Claims_Rate_Decimal': 'Claims Rate (%)'
+        })
+    fig, ax = plt.subplots(figsize=(20,3))
     ax.axis('tight')
     ax.axis('off')
 
@@ -696,7 +704,7 @@ def plot_outlier_table(outlier_table):
     )
 
     table.auto_set_font_size(False)
-    table.set_fontsize(10)
+    table.set_fontsize(12)
     table.scale(1.2, 1.2)
 
     for (row, _), cell in table.get_celld().items():
@@ -705,7 +713,7 @@ def plot_outlier_table(outlier_table):
             cell.set_facecolor('#40466e')
         else:
             cell.set_facecolor('#f5f5f5')
-    plt.title(f"Outliers: Top {limit} Stores by Claims Rate (Minimum {min_units} Sales)", weight='bold', pad=None)
+    plt.title(f"Outliers: Top {limit} Stores by Claims Rate (Minimum {min_units} Sales)", weight='bold', pad=5, fontsize=32)
     fig.tight_layout()
     plt.show()
 
@@ -715,10 +723,17 @@ plot_outlier_table(outlier_table)
 """
 
 DESCRIPTION:
-
+This code generates a visualization that directly answers Key Question 6.
+It shows a simple chart that gives the top 10 stores and products based
+on individual product/store warranty claims to look for outliers that may
+be hiding in the averages of the top stores from the noisy heatmap.
 
 INSIGHT:
-
+What we see is that even the highest claims rate product in the highest
+claims rate store has less ghan a 1% claims rate (0.81%). In raw numbers,
+there were 7 claims for the Mac Pro (Tower), with 865 units sold. Even
+the statistical outliers do not seem to have such significant claims rate
+to warrant any belief besides regularly expected noise in data.
 
 """
 
