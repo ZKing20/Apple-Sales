@@ -602,14 +602,15 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
 def load_monthly_claims_revenue_by_store():
     df = con.execute("""
         SELECT
-            st.Store_ID,
             st.Store_Name,
             st.Region,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month,
-            SUM(s.quantity * p.price) / 1000000 AS revenue_millions,
+            SUM(s.quantity * p.Price) / 1000000 AS revenue_millions,
             SUM(s.quantity) AS Total_Sales,
-            COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END) AS Completed_Claims,
-            1000000 * Completed_Claims / SUM(s.quantity * p.price) AS claims_per_million
+            CAST(
+                1000000 * COUNT(CASE WHEN w.repair_status = 'Completed' THEN 1 END)
+                     / NULLIF(SUM(s.quantity * p.Price), 0) AS DECIMAL(6,2)
+                ) AS claims_per_million
         FROM 
             sales s
         JOIN 
@@ -619,7 +620,6 @@ def load_monthly_claims_revenue_by_store():
         LEFT JOIN 
             warranty w ON s.sale_id = w.sale_id
         GROUP BY 
-            st.Store_ID,
             st.Store_Name,
             st.Region,
             Year_Month    

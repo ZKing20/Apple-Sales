@@ -878,8 +878,6 @@ if __name__ == '__main__':
             x = 'Year_Month',
             y = 'claims_per_million',
             marker = 'o',
-            size = 'Revenue (in Millions)',
-            sizes = (.5, 3),
             hue = 'Region',
             palette = consistent_region_palette,
             errorbar = None
@@ -887,6 +885,10 @@ if __name__ == '__main__':
         plt.xlabel('Date')
         plt.ylabel('Claims per $1M')
         plt.xticks(rotation=45, ha='right')
+        ax = plt.gca()
+        for index, label in enumerate(ax.get_xticklabels()):
+            if index % 3 != 0:
+                label.set_visible(False)
         plt.title('Monthly Claims per $1M vs Revenue by Store')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
         plt.grid(True)
@@ -894,3 +896,4 @@ if __name__ == '__main__':
 
     monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
     plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
+# %%
