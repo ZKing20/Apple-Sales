@@ -25,6 +25,7 @@ sys.path.append(os.path.abspath
 from eda_queries import *
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 # Definitions used frequently
 Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']
@@ -818,12 +819,14 @@ plot_claims_rate_vs_revenue(claims_rate_store_revenue)
 """
 
 DESCRIPTION:
-This code generates a visualization that directly answersKey Question 7
-by showing a scatterplot relating claims rate to revenue by store.
-sales volume.
+This code generates a visualization that directly answers Key Question 7
+by showing a scatterplot relating claims rate to revenue by store sales
+volume.
 
 INSIGHT:
-This data shows that there is no trend line to be drawn between higher
+This data shows that there are clearly two tiers of stores. Tier 1 Stores,
+earning around $80M - $85M per year, and Tier 2 stores, earning more than 
+$160M per year. There is also no trend line to be drawn between higher
 earning stores having higher claims rates, or vice versa. This suggests
 that store operations scale efficiently, with high-volume stores maintaining
 the same low claims rate as smaller stores.
@@ -831,8 +834,12 @@ the same low claims rate as smaller stores.
 """
 
 # %%
-# (7.b) Scatterplot: Claims Rate vs. Total Revenue
+# (7.b) Scatterplot: Monthly Claims Rate vs. Total Revenue
 def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
+        # Y = 1/x
+        line_x = np.linspace(1, 3.5, 100)
+
+        # Data 
         plt.figure(figsize=(20,10))
         monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {
             'Total_Sales': 'Total Sales'
@@ -846,6 +853,12 @@ def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
             hue = 'Region',
             palette = consistent_region_palette
         )
+        n = 0
+        for i in range (1, 10):
+            line_y = n / line_x
+            plt.plot(line_x, line_y, color = 'red')
+            n +=1
+            i +=1
         plt.xlabel('Total Revenue (in Millions)')
         plt.ylabel('Claims per $1M')
         plt.title('Claims per $1M vs Revenue by Store')
@@ -858,10 +871,23 @@ plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
 """
 
 DESCRIPTION:
-
+This code generates a visualization that directly answers Key Question 7
+by showing more detail about the stores caims rate by showing one dot for
+each store's claims rate for each month, color coded by Region
 
 INSIGHT:
-
+We clearly see from this visualization more evidence to support the idea
+of two tiers of stores. We can see a large gap between stores earning less
+than roughly $1.7M per month, and stores earning between $2.5M-$3.5M per
+month. At first glance, this data may seem to have some kind of structure
+to it that may indicate some type of structure that would reflect an anomaly,
+namely the lines having noticeable 'stripes'. However, this effect can simply
+be explained by the underlyingm mathematics behind the graph. The Y-axis
+shows claims per million, while the x-axis is showing revnue in millions.
+So, since Y = Claims/Revenue, as X = Revenue increases, Y decreases along
+the function Y = N / x, where N is the number of claims each store has that
+particular month. This is verified by the red lines that are overlayed on the
+graph as well.
 
 """
 
@@ -871,27 +897,20 @@ if __name__ == '__main__':
     def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
         monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {
-            'revenue_millions': 'Revenue (in Millions)'
+            'Total_Sales': 'Total Sales'
         })
-        sns.lineplot(
+        sns.scatterplot(
             data = monthly_claims_revenue_by_store,
-            x = 'Year_Month',
+            x = 'revenue_millions',
             y = 'claims_per_million',
-            marker = 'o',
-            hue = 'Region',
-            palette = consistent_region_palette,
-            errorbar = None
+            size = 'Total Sales',
+            sizes = (20, 300),
+            hue = 'Year'
         )
-        plt.xlabel('Date')
+        plt.xlabel('Total Revenue (in Millions)')
         plt.ylabel('Claims per $1M')
-        plt.xticks(rotation=45, ha='right')
-        ax = plt.gca()
-        for index, label in enumerate(ax.get_xticklabels()):
-            if index % 3 != 0:
-                label.set_visible(False)
-        plt.title('Monthly Claims per $1M vs Revenue by Store')
+        plt.title('Claims per $1M vs Revenue by Store')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
-        plt.grid(True)
         plt.show()
 
     monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
