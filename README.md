@@ -35,19 +35,22 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   - **The "February Dip":** Across all regions, revenue consistently drops in February following holiday spikes.
   - **Product Mix:** While hardware (Laptops, Phones) drives total revenue, Apple Music is the top individual product by transaction count. This highlights that customers are buying into the ecosystem, not just devices.
 
-<img src="Images/Key Question 2/2.c_regions_monthly_revenue.png" width="700"> (Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions)
+<img src="Images/Key Question 2/2.c_regions_monthly_revenue.png" width="700">
+(Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions)
 
 - **Warranty and Quality Assurance**
   - **The "Noise" Factor:** Analysis of warranty claims by Store, Region, and Product reveals a consistently low claim rate (0.10% - 0.17%) with no distinct outliers.
   - **Root Cause:** The lack of regional or store-specific spikes suggests that warranty issues are likely stemming from baseline manufacturing defects rather than shipping damage, storage conditions, or local handling.
 
-<img src="Images/Key Question 4/4.b_claims_rate_by_store.png" width="700"> (Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
+<img src="Images/Key Question 4/4.b_claims_rate_by_store.png" width="700">
+(Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
 
 - **Operational Scalbility (Revenue vs. Quality)**
   - **Two Tiers of Stores:** The data reveals two distinct clusters of stores: "Tier 1" (roughly $1.2M/mo) and "Tier 2" (roughly $2.8M/mo).
   - **Economy of Scale:** As store revenue increases, the warranty claim rate does not increase proportionally. In fact, "Tier 2" stores show lower volatility in claims per million. This proves that high-volume locations are successfully scaling operations without sacrificing service quality.
 
-<img src="Images/Key Question 7/7.b_monthly_claims_rate_per_store_vs_total_revenue_by_region.png" width="700"> (Figure 3: Claims per $1M vs Total Revenue. Note the two distinct store clusters and the tightening variance in the high-revenue cluster)
+<img src="Images/Key Question 7/7.b_monthly_claims_rate_per_store_vs_total_revenue_by_region.png" width="700">
+(Figure 3: Claims per $1M vs Total Revenue. Note the two distinct store clusters and the tightening variance in the high-revenue cluster)
 
 ### Recommendations
 Based on the data, I propose the following strategies:
