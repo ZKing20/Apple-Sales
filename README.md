@@ -24,7 +24,37 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 7. **Is there a relationship between a store’s revenue and its warranty claim rate, and which stores manage to generate strong revenue while maintaining low warranty claims?**
 
 ## Results
-(Will fill in after Notebook Completion, and when insights are finalized)
+### Summary
+- **Revenue Drivers:** The US market is dominant but likely saturated or near saturation. Hardware drives the bulk of revenue, but Subscription Services (particularly Apple Music) show high volume with low total revenue share, indicating a key growth opportunity.
+- **Operational Efficiency:** Store performance is bifurcated into two distinct "tiers". High-revenue stores deomnstrate superior operational scalability, maintaining lower warranty claims rates even at high volumes.
+- **Product Quality:** Warranty claims are low (roughly 0.10% - 0.17%) and uniform across regions, stores and products. The data strongly suggests that claim root causes are likely manufacturing-based rather than store-specific operational failures.
+
+### Key Insights and Visualizations
+- **Revenue Trends and Seasonality**
+  - **Global Leaders:** The United States generates nearly double the revenue of the next closest competitor (China). However, similar performance between North America and Asia suggests the US market may be nearing saturation.
+  - **The "February Dip":** Across all regions, revenue consistently drops in February following holiday spikes.
+  - **Product Mix:** While hardware (Laptops, Phones) drives total revenue, Apple Music is the top individual product by transaction count. This highlights that customers are buying into the ecosystem, not just devices.
+
+<img src="Images/Key Question 2/regions_monthly_revenue.png" width="700"> (Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions)
+
+- **Warranty and Quality Assurance**
+  - **The "Noise" Factor:** Analysis of warranty claims by Store, Region, and Product reveals a consistently low claim rate (0.10% - 0.17%) with no distinct outliers.
+  - **Root Cause:** The lack of regional or store-specific spikes suggests that warranty issues are likely stemming from baseline manufacturing defects rather than shipping damage, storage conditions, or local handling.
+
+<img src="Images/Key Question 4/claims_rate_by_store.png" width="700"> (Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
+
+- **Operational Scalbility (Revenue vs. Quality)**
+  - **Two Tiers of Stores:** The data reveals two distinct clusters of stores: "Tier 1" (roughly $1.2M/mo) and "Tier 2" (roughly $2.8M/mo).
+  - **Economy of Scale:** As store revenue increases, the warranty claim rate does not increase proportionally. In fact, "Tier 2" stores show lower volatility in claims per million. This proves that high-volume locations are successfully scaling operations without sacrificing service quality.
+
+<img src="Images/Key Question 7/monthly_claims_revenue_by_store.png" width="700"> (Figure 3: Claims per $1M vs Total Revenue. Note the two distinct store clusters and the tightening variance in the high-revenue cluster)
+
+### Recommendations
+Based on the data, I propose the following strategies:
+1. **Bundle Subscriptions:** Since hardware is the revenue driver, but Supscription Services are the volume driver, create aggressibe bundles (e.g., "3 Months Free Apple Music with iPad Mini") to increase Lifetime Value of hardware buyers.
+2.  **Stabilize Q1 Revenue:** To combat the predicted "February Dip", launch targeted marketing campaigns or "Valentine's Day" accessory specials in mid-January
+3.  **Invest in Middle East Expansion:** With north Africa and Asia near saturation, and high disposable income in the Middle East, this regions represents the most logical target for physical store expansion.
+
 
 ## Repository Structure
 ├── **Data/**                      (CSV files)
@@ -65,7 +95,7 @@ I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price po
 This project writes SQL in a way that DOES allow for SQL injections to occur. The reason I have decided to allow this is simply to make the SQL more readable, as security is not an issue with this data, given that it is sythetic and does not represent anything from the real world.
 
 ## Status
-Work in progress - All visualizations generated and 6 of 7 Key Questions answered.
+Very nearly complete; Finishing final polishing.
 
 All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
 
