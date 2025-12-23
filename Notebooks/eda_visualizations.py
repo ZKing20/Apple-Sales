@@ -492,13 +492,15 @@ sort_order = 'DESC'
 
 def plot_claims_rate_by_store(claims_rate_store):
     plt.figure(figsize=(20,10))
-    sns.barplot(
+    ax = sns.barplot(
         data = claims_rate_store,
         x = 'Store_Name',
         y = 'Claims_Rate',
         hue = 'Region',
         palette = consistent_region_palette
     )
+    ax.set_xlabel('')
+    ax.set_xticklabels([])
     plt.title('Claims Rate by Store')
     plt.xlabel('Store')
     plt.ylabel('Claims Rate (%)')
@@ -573,7 +575,7 @@ sort_order = 'DESC'
 
 def plot_claims_rate_by_product(claims_rate_product):
     plt.figure(figsize=(20,10))
-    sns.barplot(
+    ax = sns.barplot(
         data = claims_rate_product,
         x = 'Product_Name',
         y = 'Claims_Rate_Decimal',
@@ -582,6 +584,8 @@ def plot_claims_rate_by_product(claims_rate_product):
         dodge = False,
         palette = consistent_category_palette
     )
+    ax.set_xlabel('')
+    ax.set_xticklabels([])
     plt.title(f'Top {limit} Products by Claims Rate')
     plt.xlabel('Product Name')
     plt.ylabel('Claims Rate (%)')
@@ -887,6 +891,8 @@ store has that particular month. This is verified by the red lines that are
 overlayed on the graph as well.
 
 """
+
+#%%
 # (7.c) Scatterplot: Monthly Claims Rate vs. Total Revenue by Year
 def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
@@ -927,6 +933,7 @@ or if this was due to issues being resolved at the manufacturing level. Either w
 find the culprit and ensure best practices are being upheld.
 
 """
+
 #%%
 # Testing
 if __name__ == '__main__':
