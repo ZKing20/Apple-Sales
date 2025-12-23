@@ -25,7 +25,18 @@ con = get_connection()
 # %%
 # (1.a/b) Top N Products by Global Revenue
 def load_products_revenue(limit: int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         SELECT 
             p.Product_Name,
             c.category_name,
@@ -45,13 +56,25 @@ def load_products_revenue(limit: int, sort_order: str):
         ORDER BY
             Total_Revenue_Millions {sort_order}
         LIMIT {limit}
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 # %%
 # (1.c) Top N Products by Revenue and Region
 def load_products_revenue_region(limit: int, sort_order: str, region: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         SELECT 
             p.Product_Name,
             c.category_name,
@@ -67,7 +90,7 @@ def load_products_revenue_region(limit: int, sort_order: str, region: str):
         JOIN 
             category c ON p.Category_ID = c.category_id
         WHERE 
-            st.Region = '{region}'
+            st.Region = ?
         GROUP BY
             p.Product_ID, 
             c.category_id,
@@ -77,13 +100,25 @@ def load_products_revenue_region(limit: int, sort_order: str, region: str):
         ORDER BY
             Total_Revenue_Millions {sort_order}
         LIMIT {limit}
-    """).fetchdf()
+    """
+    df = con.execute(query, [region]).fetchdf()
     return df
 
 # %%
 # (2.a) Top N Countries by Monthly Revenue
 def load_country_monthly_revenue(limit:int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH country_totals AS (
             SELECT
                 st.Country,
@@ -117,13 +152,25 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
             Year_Month
         ORDER BY                             
             Year_Month
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
 # (2.b) Top N stores by Monthly Revenue
 def load_stores_monthly_revenue(limit:int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH store_totals AS (
             SELECT
                 st.Store_ID,
@@ -165,13 +212,21 @@ def load_stores_monthly_revenue(limit:int, sort_order: str):
             Year_Month
         ORDER BY                             
             Year_Month
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
 # (2.c) Regions by Monthly Revenue
 def load_regions_monthly_revenue(sort_order: str):
-    df = con.execute(f"""
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH region_totals AS (
             SELECT
                 st.Region,
@@ -204,7 +259,8 @@ def load_regions_monthly_revenue(sort_order: str):
             Year_Month
         ORDER BY                              
             Year_Month
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 # %%
@@ -225,7 +281,14 @@ SQL.
 """ 
 
 def load_category_revenue_by_year(sort_order: str):
-    df = con.execute(f"""
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH yearly AS (
             SELECT
                 c.category_name,
@@ -271,13 +334,21 @@ def load_category_revenue_by_year(sort_order: str):
             yearly
         ORDER BY
             Total_Revenue_Millions {sort_order};           
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
 # (3.b) Category by Monthly Revenue
 def load_category_monthly_revenue(sort_order: str):
-    df = con.execute(f"""
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH category_totals AS (
             SELECT
                 c.category_id,
@@ -320,7 +391,8 @@ def load_category_monthly_revenue(sort_order: str):
             Year_Month
         ORDER BY                             
             Year_Month
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
@@ -329,7 +401,18 @@ def load_category_monthly_revenue(sort_order: str):
 #%%
 # (4.a) Claims Rate by Country
 def load_claims_rate_country(limit: int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         SELECT
             CAST(
                 COALESCE(
@@ -352,13 +435,25 @@ def load_claims_rate_country(limit: int, sort_order: str):
         ORDER BY
             Claims_Rate {sort_order}
         LIMIT {limit}
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
 # (4.b) Claims Rate by Store
 def load_claims_rate_store(limit: int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         SELECT
             CAST(
                 COALESCE(
@@ -381,13 +476,25 @@ def load_claims_rate_store(limit: int, sort_order: str):
         ORDER BY
             Claims_Rate {sort_order}
         LIMIT {limit}
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 # %%
 # (5.a/b) Claims Rate by Product
 def load_claims_rate_product(limit: int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH Claims_Rate AS (
             SELECT
                 p.Product_ID,
@@ -424,13 +531,15 @@ def load_claims_rate_product(limit: int, sort_order: str):
         ORDER BY 
             Claims_Rate_Decimal {sort_order}
         LIMIT {limit}
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 # %%
 # (5.c) Monthly Claims vs. Revenue by Store
 def load_claims_rate_vs_units():
-    df = con.execute("""
+    # Define Query
+    query = """
         WITH Claims_Rate AS (
             SELECT
                 p.Product_ID,
@@ -465,13 +574,21 @@ def load_claims_rate_vs_units():
             Claims_Rate
         ORDER BY 
             Claims_Rate_Decimal
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
 #  (6.a) Claims Rate by Product and Store
 def load_claims_rate_products_store(sort_order: str = 'ASC'):
-    df = con.execute(f"""
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH Claims_Rate AS (
             SELECT
                 st.Store_ID,
@@ -511,13 +628,23 @@ def load_claims_rate_products_store(sort_order: str = 'ASC'):
             Claims_Rate
         ORDER BY 
             Claims_Rate_Decimal {sort_order}
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
 # (6.b) Outlier Table
 def load_outliers(min_units: int, limit: int):
-    df = con.execute(f"""
+    # Validate min_units is a positive integer
+    if not isinstance(min_units, int) or min_units < 1:
+        raise ValueError("min_units must be a positive integer.")
+
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Define Query
+    query = f"""
         SELECT
             st.Store_Name,
             p.Product_Name,
@@ -545,7 +672,8 @@ def load_outliers(min_units: int, limit: int):
         ORDER BY
             Claims_Rate_Decimal DESC
         LIMIT {limit}
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%
@@ -554,7 +682,18 @@ def load_outliers(min_units: int, limit: int):
 #%%
 # (7.a) Claims Rate per Million by Store
 def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
-    df = con.execute(f"""
+    # Validate limit is a positive integer
+    if not isinstance(limit, int) or limit < 1:
+        raise ValueError("Limit must be a positive integer.")
+    
+    # Validate structural inputs (cannot be parameterized)
+    valid_orders = ['ASC', 'DESC']
+    normalized_order = sort_order.upper().strip()
+    if normalized_order not in valid_orders:
+        raise ValueError(f"Invalid sort_order. Must be one of {valid_orders}")
+    
+    # Define Query
+    query = f"""
         WITH claims_per_revenue AS (
             SELECT
                 st.Store_ID,
@@ -594,13 +733,15 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
         ORDER BY 
             claims_per_million {sort_order}
         LIMIT {limit}         
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 # %%
 # (7.b/c) Monthly Claims vs. Revenue by Store
 def load_monthly_claims_revenue_by_store():
-    df = con.execute("""
+    # Define Query
+    query = """
         SELECT
             st.Store_Name,
             st.Region,
@@ -629,7 +770,8 @@ def load_monthly_claims_revenue_by_store():
             claims_per_million,
             Year,
             Year_Month
-    """).fetchdf()
+    """
+    df = con.execute(query).fetchdf()
     return df
 
 #%%

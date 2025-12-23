@@ -26,7 +26,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 ## Results
 ### Summary
 - **Revenue Drivers:** The US market is dominant but likely saturated or near saturation. Hardware drives the bulk of revenue, but Subscription Services (particularly Apple Music) show high volume with low total revenue share, indicating a key growth opportunity.
-- **Operational Efficiency:** Store performance is bifurcated into two distinct "tiers". High-revenue stores deomnstrate superior operational scalability, maintaining lower warranty claims rates even at high volumes.
+- **Operational Efficiency:** Store performance is bifurcated into two distinct "tiers". High-revenue stores demonstrate superior operational scalability, maintaining lower warranty claims rates even at high volumes.
 - **Product Quality:** Warranty claims are low (roughly 0.10% - 0.17%) and uniform across regions, stores and products. The data strongly suggests that claim root causes are likely manufacturing-based rather than store-specific operational failures.
 
 ### Key Insights and Visualizations
@@ -54,9 +54,9 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 
 ### Recommendations
 Based on the data, I propose the following strategies:
-1. **Bundle Subscriptions:** Since hardware is the revenue driver, but Supscription Services are the volume driver, create aggressibe bundles (e.g., "3 Months Free Apple Music with iPad Mini") to increase Lifetime Value of hardware buyers.
+1. **Bundle Subscriptions:** Since hardware is the revenue driver, but Supscription Services are the volume driver, create aggressive bundles (e.g., "3 Months Free Apple Music with iPad Mini") to increase Lifetime Value of hardware buyers.
 2.  **Stabilize Q1 Revenue:** To combat the predicted "February Dip", launch targeted marketing campaigns or "Valentine's Day" accessory specials in mid-January
-3.  **Invest in Middle East Expansion:** With north Africa and Asia near saturation, and high disposable income in the Middle East, this regions represents the most logical target for physical store expansion.
+3.  **Invest in Middle East Expansion:** With North Africa and Asia near saturation, and high disposable income in the Middle East, this regions represents the most logical target for physical store expansion.
 
 
 ## Repository Structure
@@ -82,7 +82,7 @@ Based on the data, I propose the following strategies:
 
 │   ├── extensions.json        (packages and modules needed to replicate)
 
-│   ├── settions.json          (various necessary setings)
+│   ├── settings.json          (various necessary setings)
 
 ├── .gitignore   
 
@@ -93,9 +93,6 @@ Based on the data, I propose the following strategies:
 ## Notes
 ### Data Integrity
 I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price point ($1149) and release date. While the name is rather vague, the product accounts for $73M in revenue (1.2%) of total. To preserve data integrity and financial accuracy, I decided that it made the most sense for this product to be included in the dataset despite the ambiguous naming. Note that this dataset is synthetic data gathered from Kaggle, so it isn't as simple as just looking up which product released on the given release date.
-
-### Security
-This project writes SQL in a way that DOES allow for SQL injections to occur. The reason I have decided to allow this is simply to make the SQL more readable, as security is not an issue with this data, given that it is sythetic and does not represent anything from the real world.
 
 ## Status
 Very nearly complete; Finishing final polishing.
