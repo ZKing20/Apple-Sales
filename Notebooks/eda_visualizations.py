@@ -834,11 +834,8 @@ the same low claims rate as smaller stores.
 """
 
 # %%
-# (7.b) Scatterplot: Monthly Claims Rate vs. Total Revenue
+# (7.b) Scatterplot: Monthly Claims Rate vs. Total Revenue by Region
 def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
-        # Y = 1/x
-        line_x = np.linspace(1, 3.5, 100)
-
         # Data 
         plt.figure(figsize=(20,10))
         monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {
@@ -853,12 +850,12 @@ def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
             hue = 'Region',
             palette = consistent_region_palette
         )
-        n = 0
-        for i in range (1, 10):
+        # Y = N/x
+        line_x = np.linspace(1, 3.5, 100)
+        for n in range (0, 10):
             line_y = n / line_x
-            plt.plot(line_x, line_y, color = 'red')
+            plt.plot(line_x, line_y, 'r--')
             n +=1
-            i +=1
         plt.xlabel('Total Revenue (in Millions)')
         plt.ylabel('Claims per $1M')
         plt.title('Claims per $1M vs Revenue by Store')
@@ -884,17 +881,14 @@ to it that may indicate some type of structure that would reflect an anomaly,
 namely the lines having noticeable 'stripes'. However, this effect can simply
 be explained by the underlyingm mathematics behind the graph. The Y-axis
 shows claims per million, while the x-axis is showing revnue in millions.
-So, since Y = Claims/Revenue, as X = Revenue increases, Y decreases along
-the function Y = N / x, where N is the number of claims each store has that
-particular month. This is verified by the red lines that are overlayed on the
-graph as well.
+So, since Y = Claims/Revenue, as we see an increase in X = Revenue, Y
+decreases along the function Y = N / x, where N is the number of claims each
+store has that particular month. This is verified by the red lines that are
+overlayed on the graph as well.
 
 """
-
-#%%
-# Testing
-if __name__ == '__main__':
-    def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
+# (7.c) Scatterplot: Monthly Claims Rate vs. Total Revenue by Year
+def plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store):
         plt.figure(figsize=(20,10))
         monthly_claims_revenue_by_store = monthly_claims_revenue_by_store.rename(columns = {
             'Total_Sales': 'Total Sales'
@@ -913,6 +907,27 @@ if __name__ == '__main__':
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2)
         plt.show()
 
-    monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
-    plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
-# %%
+monthly_claims_revenue_by_store = load_monthly_claims_revenue_by_store()
+plot_monthly_claims_revenue_by_store(monthly_claims_revenue_by_store)
+
+"""
+
+DESCRIPTION:
+This code generates a visualization that directly answers Key Question 7
+by showing more detail about the stores caims rate by showing one dot for
+each store's claims rate for each month, color coded by Year.
+
+INSIGHT:
+This visualization shows a very similar picture to the last one, but also
+reveals that there is a large cluster of stores with between 0-3 claims per
+month in the year 2024. This indicates that things have improved in the most
+recent year in terms of warranty claims. Investigate further to see if this is
+due to company policy changes (i.e. changes in training, hiring of managers, etc.),
+or if this was due to issues being resolved at the manufacturing level. Either way,
+find the culprit and ensure best practices are being upheld.
+
+"""
+#%%
+# Testing
+if __name__ == '__main__':
+    None

@@ -598,7 +598,7 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
     return df
 
 # %%
-# (7.b) Monthly Claims vs. Revenue by Store
+# (7.b/c) Monthly Claims vs. Revenue by Store
 def load_monthly_claims_revenue_by_store():
     df = con.execute("""
         SELECT
