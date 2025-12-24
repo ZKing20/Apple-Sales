@@ -38,7 +38,9 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 <p align="center">
   <img src="Images/Key Question 2/2.c_regions_monthly_revenue.png" width="700">
 </p>
-(Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions)
+<p align="center">
+  (Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions)
+</p>
 
 - **Warranty and Quality Assurance**
   - **The "Noise" Factor:** Analysis of warranty claims by Store, Region, and Product reveals a consistently low claim rate (0.10% - 0.17%) with no distinct outliers.
@@ -47,7 +49,9 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 <p align="center">
   <img src="Images/Key Question 4/4.b_claims_rate_by_store.png" width="700">
 </p>
-(Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
+<p align="center">
+  (Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
+</p>
 
 - **Operational Scalbility (Revenue vs. Quality)**
   - **Two Tiers of Stores:** The data reveals two distinct clusters of stores: "Tier 1" (roughly $1.2M/mo) and "Tier 2" (roughly $2.8M/mo).
@@ -56,7 +60,9 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 <p align="center">
   <img src="Images/Key Question 7/7.c_monthly_claims_rate_per_store_vs_total_revenue_by_year.png" width="700">
 </p>
-(Figure 3: Claims per $1M vs Total Revenue. Note the two distinct store clusters and the tightening variance in the high-revenue cluster)
+<p align="center">
+  (Figure 3: Claims per $1M vs Total Revenue. Note the two distinct store clusters and the tightening variance in the high-revenue cluster)
+</p>
 
 ### Recommendations
 Based on the data, I propose the following strategies:

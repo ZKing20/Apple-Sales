@@ -295,7 +295,7 @@ def plot_regions_monthly_revenue(regions_data):
         marker = 'o',
         errorbar = None
     )
-    plt.title(f'Monthly Revenue Trend for Top {limit} Regions')
+    plt.title(f'Monthly Revenue Trend by Region')
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
