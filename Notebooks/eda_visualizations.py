@@ -17,12 +17,25 @@
 # %%
 # Imports
 import os, sys
-sys.path.append(os.path.abspath
-        (os.path.join
-            (os.getcwd(), '..', 'Scripts')
-        )
-                )
-from eda_queries import *
+
+try:
+    current_file_dir = os.path.dirname(os.path.abspath(__file__))
+except NameError:
+    current_file_dir = os.getcwd()
+
+project_root = os.path.dirname(current_file_dir)
+
+scripts_path = os.path.join(project_root, 'Scripts')
+
+for path in [project_root, scripts_path]:
+    if path not in sys.path:
+        sys.path.append(path)
+
+try:
+    from eda_queries import *
+except ModuleNotFoundError:
+    print("Import failing. Current Search Paths:")
+    for p in sys.path[-3:]: print(f"  - {p}")
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
