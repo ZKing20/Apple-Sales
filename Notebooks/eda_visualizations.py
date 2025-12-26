@@ -15,9 +15,13 @@
 # ---
 
 # %%
-# Imports
+# Import packages
 import os, sys
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
+# Import eda_queries
 try:
     current_file_dir = os.path.dirname(os.path.abspath(__file__))
 except NameError:
@@ -36,9 +40,6 @@ try:
 except ModuleNotFoundError:
     print("Import failing. Current Search Paths:")
     for p in sys.path[-3:]: print(f"  - {p}")
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
 
 # Definitions used frequently
 Regions = ['North America', 'South America', 'Europe', 'Asia', 'Middle East', 'Oceania']

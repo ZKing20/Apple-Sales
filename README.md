@@ -53,7 +53,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   (Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
 </p>
 
-- **Operational Scalbility (Revenue vs. Quality)**
+- **Operational Scalability (Revenue vs. Quality)**
   - **Two Tiers of Stores:** The data reveals two distinct clusters of stores: "Tier 1" (roughly $1.2M/mo) and "Tier 2" (roughly $2.8M/mo).
   - **Economy of Scale:** As store revenue increases, the warranty claim rate does not increase proportionally. In fact, "Tier 2" stores show lower volatility in claims per million. This proves that high-volume locations are successfully scaling operations without sacrificing service quality.
 
@@ -108,6 +108,11 @@ I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price po
 
 ## Status
 Very nearly complete; Finishing final polishing.
+
+## Quick Start
+1. **Clone the Repository**
+2. **Run pip install -r requirements.txt**
+3. **Navigate to the eda_visualizations.py file in the Notebooks folder, and run any cell** (just make sure to run the imports cell before any others every time you start an enviornment.)
 
 All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
 
