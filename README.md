@@ -39,7 +39,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   <img src="Images/Key Question 2/2.c_regions_monthly_revenue.png" width="700">
 </p>
 <p align="center">
-  (Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions)
+  Figure 1: Monthly Revenue trends showing the consistent post-holiday dip across all major regions
 </p>
 
 - **Warranty and Quality Assurance**
@@ -50,7 +50,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   <img src="Images/Key Question 4/4.b_claims_rate_by_store.png" width="700">
 </p>
 <p align="center">
-  (Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures)
+  Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures
 </p>
 
 - **Operational Scalability (Revenue vs. Quality)**
@@ -58,10 +58,10 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   - **Economy of Scale:** As store revenue increases, the warranty claim rate does not increase proportionally. In fact, "Tier 2" stores show lower volatility in claims per million. This proves that high-volume locations are successfully scaling operations without sacrificing service quality.
 
 <p align="center">
-  <img src="Images/Key Question 7/7.c_monthly_claims_rate_per_store_vs_total_revenue_by_year.png" width="700">
+  <img src="Images/Key Question 7/7.b_monthly_claims_rate_per_store_vs_total_revenue_by_region.png" width="700">
 </p>
 <p align="center">
-  (Figure 3: Claims per $1M vs Total Revenue. Note the two distinct store clusters and the tightening variance in the high-revenue cluster)
+  Figure 3: Claims per $1M vs Total Revenue. Note that this figure has (claims / revenue) in the Y-axis and revenue in the X-axis. This means the graph follows the function Y = (number of claims / X), with each red line representing a different number (0-9) of claims per $1M revenue (Y=0/X, Y=1/X, Y=2/X, etc.). This explains the overall structure of the graph (i.e. the way the datapoints cluster together in the way they do). What this shows is that Tier 2 stores have the same number of claims per $1M in revenue they generate as the lower income stores, indicating ability to scale without lowering quality standards.
 </p>
 
 ### Recommendations
