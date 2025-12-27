@@ -109,9 +109,9 @@ I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price po
 ## Status
 Very nearly complete; Finishing final polishing.
 
-## Quick Start
+## How to Run
 1. **Clone the Repository**
-2. **Run pip install -r requirements.txt**
+2. **Run ```pip install -r requirements.txt```**
 3. **Navigate to the eda_visualizations.py file in the Notebooks folder, and run any cell** (just make sure to run the imports cell before any others every time you start an enviornment.)
 
 All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
