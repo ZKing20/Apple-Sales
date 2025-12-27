@@ -50,7 +50,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   <img src="Images/Key Question 4/4.b_claims_rate_by_store.png" width="700">
 </p>
 <p align="center">
-  Figure 2: Claims rates are flat scross stores, indicating a stable baseline manufacturing defect rate, rather than operational failures
+  Figure 2: Claims rates are flat across stores, indicating a stable baseline manufacturing defect rate, rather than operational failures
 </p>
 
 - **Operational Scalability (Revenue vs. Quality)**
@@ -68,7 +68,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 Based on the data, I propose the following strategies:
 1. **Bundle Subscriptions:** Since hardware is the revenue driver, but Subscription Services show growth potential, create aggressive bundles (e.g., "3 Months Free Apple One with iPad Mini") to increase Lifetime Value of hardware buyers.
 2.  **Stabilize Q1 Revenue:** To combat the predicted "February Dip", launch targeted marketing campaigns or "Valentine's Day" accessory specials in mid-January
-3.  **Invest in Middle East Expansion:** With North Africa and Asia near saturation, and high disposable income in the Middle East, this regions represents the most logical target for physical store expansion.
+3.  **Invest in Middle East Expansion:** With North Africa and Asia near saturation, and high disposable income in the Middle East, this region represents the most logical target for physical store expansion.
 
 
 ## Repository Structure
@@ -112,7 +112,7 @@ Very nearly complete; Final polishing in progress.
 ## How to Run
 1. **Clone the Repository**
 2. **Run ```pip install -r requirements.txt```**
-3. **Navigate to the eda_visualizations.py file in the Notebooks folder, and run any cell** (just make sure to run the imports cell before any others every time you start an enviornment.)
+3. **Navigate to the eda_visualizations.py file in the Notebooks folder, and run any cell** (just make sure to run the imports cell before any others every time you start an environment.)
 
 All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
 
