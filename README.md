@@ -6,7 +6,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 ## Tools Used
 - Python (pandas, duckdb, matplotlib/plotly)
 - Jupyter Notebook
-- SQL (DuckDB)
+- SQL via DuckDB (Complex queries, CTE's)
 - Kaggle retail dataset
 
 ##  Key Questions
@@ -61,7 +61,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
   <img src="Images/Key Question 7/7.b_monthly_claims_rate_per_store_vs_total_revenue_by_region.png" width="700">
 </p>
 <p align="center">
-  Figure 3: Claims per $1M vs Total Revenue. Note that this figure has (claims / revenue) in the Y-axis and revenue in the X-axis. This means the graph follows the function Y = (number of claims / X), with each red line representing a different number (0-9) of claims per $1M revenue (Y=0/X, Y=1/X, Y=2/X, etc.). This explains the overall structure of the graph (i.e. the way the datapoints cluster together in the way they do). What this shows is that Tier 2 stores have the same number of claims per $1M in revenue they generate as the lower income stores, indicating ability to scale without lowering quality standards.
+  Figure 3: Claims per $1M vs Total Revenue. Note that this figure has (claims / revenue) in the Y-axis and revenue in the X-axis. This means the graph follows the function Y = (number of claims / X), with each red line representing a different number (0-9) of total claims (Y=0/X, Y=1/X, Y=2/X, etc.). This explains the overall structure of the graph (i.e. the way the datapoints cluster together in the way they do). What this shows is that Tier 2 stores have the same number of claims per $1M in revenue generated as the lower income stores, indicating ability to scale without lowering quality standards.
 </p>
 
 ### Recommendations
@@ -107,7 +107,7 @@ Based on the data, I propose the following strategies:
 I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price point ($1149) and release date. While the name is rather vague, the product accounts for $73M in revenue (1.2%) of total. To preserve data integrity and financial accuracy, I decided that it made the most sense for this product to be included in the dataset despite the ambiguous naming. Note that this dataset is synthetic data gathered from Kaggle, so it isn't as simple as just looking up which product released on the given release date.
 
 ## Status
-Very nearly complete; Finishing final polishing.
+Very nearly complete; Final polishing in progress.
 
 ## How to Run
 1. **Clone the Repository**
