@@ -29,7 +29,7 @@ def load_products_revenue(limit: int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -67,7 +67,7 @@ def load_products_revenue_region(limit: int, sort_order: str, region: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -111,7 +111,7 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -137,7 +137,7 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
         )
         SELECT
             ct.Country,
-            SUM(s.quantity * p.Price) AS Monthly_Revenue,
+            SUM(s.quantity * p.Price) / 1000000 AS Monthly_Revenue_Millions,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
         FROM
             sales s
@@ -163,7 +163,7 @@ def load_stores_monthly_revenue(limit:int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -195,7 +195,7 @@ def load_stores_monthly_revenue(limit:int, sort_order: str):
             stt.Store_ID,
             stt.Store_Name,
             stt.Region,
-            SUM(s.quantity * p.Price) AS Monthly_Revenue,
+            SUM(s.quantity * p.Price) / 1000000 AS Monthly_Revenue_Millions,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
         FROM
             sales s
@@ -219,7 +219,7 @@ def load_stores_monthly_revenue(limit:int, sort_order: str):
 #%%
 # (2.c) Regions by Monthly Revenue
 def load_regions_monthly_revenue(sort_order: str):
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -244,7 +244,7 @@ def load_regions_monthly_revenue(sort_order: str):
         )
         SELECT
             rt.Region,
-            SUM(s.quantity * p.Price) AS Monthly_Revenue,
+            SUM(s.quantity * p.Price) / 1000000 AS Monthly_Revenue_Millions,
             strftime(strptime(s.sale_date, '%d-%m-%Y'), '%Y-%m') AS Year_Month
         FROM
             sales s
@@ -281,7 +281,7 @@ SQL.
 """ 
 
 def load_category_revenue_by_year(sort_order: str):
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -341,7 +341,7 @@ def load_category_revenue_by_year(sort_order: str):
 #%%
 # (3.b) Category by Monthly Revenue
 def load_category_monthly_revenue(sort_order: str):
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -405,7 +405,7 @@ def load_claims_rate_country(limit: int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -446,7 +446,7 @@ def load_claims_rate_store(limit: int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -487,7 +487,7 @@ def load_claims_rate_product(limit: int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -581,7 +581,7 @@ def load_claims_rate_vs_units():
 #%%
 #  (6.a) Claims Rate by Product and Store
 def load_claims_rate_products_store(sort_order: str = 'ASC'):
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:
@@ -686,7 +686,7 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
     if not isinstance(limit, int) or limit < 1:
         raise ValueError("Limit must be a positive integer.")
     
-    # Validate structural inputs (cannot be parameterized)
+    # Validate inputs (cannot be parameterized)
     valid_orders = ['ASC', 'DESC']
     normalized_order = sort_order.upper().strip()
     if normalized_order not in valid_orders:

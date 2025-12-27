@@ -71,15 +71,15 @@ consistent_region_palette = {
 
 """
 
-Key Question (1):
+Key Question 1:
 Which products generate the highest revenue, and how consistent is this 
 performance across regions?
 
-Key Question (2):
+Key Question 2:
 Which stores and countries contribute the most to overall revenue, and 
 how do their monthly trends compare?
 
-Key Question (3):
+Key Question 3:
 Which product categories show strong growth or decline over time?
 
 """
@@ -157,7 +157,8 @@ INSIGHT:
 This visualization shows that there are no clear bands along category 
 lines, and that product revenue generally decreases at a steady rate. 
 No large jumps downwards in revenue indicates that there is no large gap
-in any product(s) perceived quality by customers.
+in any product(s) perceived quality by customers (i.e. no extreme 'Heavy
+Hitters' driving the vast bulk of the company's revenue).
 
 """
 
@@ -192,7 +193,7 @@ for region in Regions:
 DESCRIPTION:
 This code produces 6 visualizations, each showing the same graph
 but filtered by region. This directly answers the second part of 
-Key Question (1), with regards to consistency of top revenue earners
+Key Question 1, with regards to consistency of top revenue earners
 across regions. 
 
 INSIGHT:
@@ -216,11 +217,11 @@ def plot_top_country_monthly_revenue(top_country_data):
     sns.lineplot(
         data = top_country_data,
         x = 'Year_Month',
-        y = 'Monthly_Revenue',
+        y = 'Monthly_Revenue_Millions',
         hue = 'Country',
         marker = 'o'
     )
-    plt.title(f'Monthly Revenue Trend for Top {limit} Countries')
+    plt.title(f'Monthly Revenue Trend for Top {limit} Countries (in Millions)')
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
@@ -234,7 +235,7 @@ plot_top_country_monthly_revenue(top_country_data)
 """
 
 DESCRIPTION:
-This code generates a visualization that directly answers Key Question (2).
+This code generates a visualization that directly answers Key Question 2.
 By showing monthly revenue of the top countries, this gives a clear 
 picture of the trends of the top revenue generating countries.
 
@@ -258,13 +259,13 @@ def plot_top_store_monthly_revenue(top_store_data):
     sns.lineplot(
         data = top_store_data,
         x = 'Year_Month',
-        y = 'Monthly_Revenue',
+        y = 'Monthly_Revenue_Millions',
         hue = 'Region',
         palette = consistent_region_palette,
         marker = 'o',
         errorbar = None
     )
-    plt.title(f'Monthly Revenue Trend for Top {limit} Stores')
+    plt.title(f'Monthly Revenue Trend for Top {limit} Stores (in Millions)')
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
@@ -278,7 +279,7 @@ plot_top_store_monthly_revenue(top_store_data)
 """
 
 DESCRIPTION:
-This code generates a visualization that directly answers Key Question (2).
+This code generates a visualization that directly answers Key Question 2.
 By showing monthly revenue of the top stores, this gives a clear 
 picture of the trends of the top revenue generating stores.
 
@@ -303,13 +304,13 @@ def plot_regions_monthly_revenue(regions_data):
     sns.lineplot(
         data = regions_data,
         x = 'Year_Month',
-        y = 'Monthly_Revenue',
+        y = 'Monthly_Revenue_Millions',
         hue = 'Region',
         palette = consistent_region_palette,
         marker = 'o',
         errorbar = None
     )
-    plt.title(f'Monthly Revenue Trend by Region')
+    plt.title(f'Monthly Revenue Trend by Region (in Millions)')
     plt.xlabel('Year-Month')
     plt.ylabel('Monthly Revenue')
     plt.xticks(rotation=45, ha='right')
@@ -325,7 +326,7 @@ plot_regions_monthly_revenue(regions_data)
 DESCRIPTION:
 This code generates a visualization that shows the Regions ranked by 
 monthly revenue, helping give more a more well rounded answer to
-Key Question (2). By showing the regions themselves, this helps give
+Key Question 2. By showing the regions themselves, this helps give
 more context about the overall trends of our top stores.
 
 INSIGHT:
@@ -380,14 +381,14 @@ plot_category_revenue_by_year(category_revenue)
 DESCRIPTION:
 This code generates a visualization that shows Revenue by Category type.
 This aims to help provide groundwork to get a well rounded answer to
-Key Question (3), by giving a baseline of what global revenue looks like
+Key Question 3, by giving a baseline of what global revenue looks like
 when broken up by Category.
 
 INSIGHT:
 This shows that the actual hardware makes up the vast bulk of the revenue 
-for the company. Coupled with findings from Key Question (1), we get more reason
+for the company. Coupled with findings from Key Question 1, we get more reason
 to focus efforts to expanding more efforts to boost revenue from subscription services.
-Key Question (1) revealed that globally, subscription services are very popular, but
+Key Question 1 revealed that globally, subscription services are very popular, but
 they don't make up very much of the overall revenue percentage. This indicates that they
 are undersaturated in the market at the moment, despite their popularity.
 
@@ -423,7 +424,7 @@ plot_category_monthly_revenue(category_data)
 
 DESCRIPTION:
 This code generates a visualization to show Monthly Revenue by Category type,
-helping to directly answer Key Question (3), by giving an idea of trends for product
+helping to directly answer Key Question 3, by giving an idea of trends for product
 categories over time.
 
 INSIGHT:
@@ -445,14 +446,14 @@ more customers into the entire Apple ecosystem.
 
 """
 
-Key Question (4):
+Key Question 4:
 Which stores and regions have the highest warranty claim counts or rates?
 
-Key Question (5):
+Key Question 5:
 Which products experience the highest claim rates, and how does this 
 relate to their sales volume?
 
-Key Question (6):
+Key Question 6:
 Are there specific product-store combinations that show unusually 
 high claim activity?
 
@@ -486,7 +487,7 @@ plot_claims_rate_by_country(claims_rate_country)
 
 DESCRIPTION:
 This code generates a visualization that directly helps to answer
-Key Question (4) by showing a graph of the claims rate for every country
+Key Question 4 by showing a graph of the claims rate for every country
 we have data for, color coded by region to help see if regional trends
 are present.
 
@@ -529,7 +530,7 @@ plot_claims_rate_by_store(claims_rate_store)
 
 DESCRIPTION:
 This code generates a visualizations that directly helps to answer 
-Key Question (4) by showing the exact claims rate for the stores. 
+Key Question 4 by showing the exact claims rate for the stores. 
 
 INSIGHT:
 Even when going for a fairly large scope (n = 100) of stores, we see 
@@ -797,7 +798,7 @@ to warrant any belief besides regularly expected noise in data.
 
 """
 
-Key Question (7):
+Key Question 7:
 Is there a relationship between a store's revenue and its 
 warranty claim rate, and which stores manage to generate strong
 revenue while maintaining low warranty claims?
