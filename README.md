@@ -25,7 +25,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 
 ## Results
 ### Summary
-- **Revenue Drivers:** The US market is dominant but likely saturated or near saturation. Hardware drives the bulk of revenue, but Subscription Services (particularly Apple Music) show high volume with low total revenue share, indicating a key growth opportunity.
+- **Revenue Drivers:** The US market is dominant but likely saturated or near saturation. Hardware drives the bulk of revenue, but Subscription Services show low total revenue share; Apple Music is the highest earning individual product, indicating a key growth opportunity, if other Subscription Services can replicate the success of Apple Music.
 - **Operational Efficiency:** Store performance is bifurcated into two distinct "tiers". High-revenue stores demonstrate superior operational scalability, maintaining lower warranty claims rates even at high volumes.
 - **Product Quality:** Warranty claims are low (roughly 0.10% - 0.17%) and uniform across regions, stores and products. The data strongly suggests that claim root causes are likely manufacturing-based rather than store-specific operational failures.
 
@@ -66,7 +66,7 @@ Analyze Apple sales performance and warranty outcomes across products, stores, a
 
 ### Recommendations
 Based on the data, I propose the following strategies:
-1. **Bundle Subscriptions:** Since hardware is the revenue driver, but Supscription Services are the volume driver, create aggressive bundles (e.g., "3 Months Free Apple Music with iPad Mini") to increase Lifetime Value of hardware buyers.
+1. **Bundle Subscriptions:** Since hardware is the revenue driver, but Subscription Services show growth potential, create aggressive bundles (e.g., "3 Months Free Apple One with iPad Mini") to increase Lifetime Value of hardware buyers.
 2.  **Stabilize Q1 Revenue:** To combat the predicted "February Dip", launch targeted marketing campaigns or "Valentine's Day" accessory specials in mid-January
 3.  **Invest in Middle East Expansion:** With North Africa and Asia near saturation, and high disposable income in the Middle East, this regions represents the most logical target for physical store expansion.
 
