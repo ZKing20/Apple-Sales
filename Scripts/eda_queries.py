@@ -55,9 +55,9 @@ def load_products_revenue(limit: int, sort_order: str):
             c.category_name
         ORDER BY
             Total_Revenue_Millions {sort_order}
-        LIMIT {limit}
+        LIMIT ?
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 # %%
@@ -99,9 +99,9 @@ def load_products_revenue_region(limit: int, sort_order: str, region: str):
             c.category_name
         ORDER BY
             Total_Revenue_Millions {sort_order}
-        LIMIT {limit}
+        LIMIT ?
     """
-    df = con.execute(query, [region]).fetchdf()
+    df = con.execute(query, [region, limit]).fetchdf()
     return df
 
 # %%
@@ -133,7 +133,7 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
                 st.Country
             ORDER BY 
                 Total_Revenue {sort_order}
-            LIMIT {limit}
+            LIMIT ?
         )
         SELECT
             ct.Country,
@@ -153,7 +153,7 @@ def load_country_monthly_revenue(limit:int, sort_order: str):
         ORDER BY                             
             Year_Month
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 #%%
@@ -189,7 +189,7 @@ def load_stores_monthly_revenue(limit:int, sort_order: str):
                 st.Region
             ORDER BY 
                 Total_Revenue {sort_order}
-            LIMIT {limit}
+            LIMIT ?
         )
         SELECT
             stt.Store_ID,
@@ -213,7 +213,7 @@ def load_stores_monthly_revenue(limit:int, sort_order: str):
         ORDER BY                             
             Year_Month
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 #%%
@@ -434,9 +434,9 @@ def load_claims_rate_country(limit: int, sort_order: str):
             st.Country
         ORDER BY
             Claims_Rate {sort_order}
-        LIMIT {limit}
+        LIMIT ?
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 #%%
@@ -475,9 +475,9 @@ def load_claims_rate_store(limit: int, sort_order: str):
             st.Region
         ORDER BY
             Claims_Rate {sort_order}
-        LIMIT {limit}
+        LIMIT ?
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 # %%
@@ -530,9 +530,9 @@ def load_claims_rate_product(limit: int, sort_order: str):
             Claims_Rate
         ORDER BY 
             Claims_Rate_Decimal {sort_order}
-        LIMIT {limit}
+        LIMIT ?
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 # %%
@@ -668,12 +668,12 @@ def load_outliers(min_units: int, limit: int):
             p.Product_Name,
             st.Region
         HAVING
-            Units_Sold >= {min_units}
+            Units_Sold >= ?
         ORDER BY
             Claims_Rate_Decimal DESC
-        LIMIT {limit}
+        LIMIT ?
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [min_units, limit]).fetchdf()
     return df
 
 #%%
@@ -732,9 +732,9 @@ def load_claims_vs_revenue_by_store(limit: int, sort_order: str):
             claims_per_revenue           
         ORDER BY 
             claims_per_million {sort_order}
-        LIMIT {limit}         
+        LIMIT ?        
     """
-    df = con.execute(query).fetchdf()
+    df = con.execute(query, [limit]).fetchdf()
     return df
 
 # %%
