@@ -107,11 +107,11 @@ Based on the data, I propose the following strategies:
 I identified a product simply labeled 'MacBook' (ID: P-1) with a unique price point ($1149) and release date. While the name is rather vague, the product accounts for $73M in revenue (1.2%) of total. To preserve data integrity and financial accuracy, I decided that it made the most sense for this product to be included in the dataset despite the ambiguous naming. Note that this dataset is synthetic data gathered from Kaggle, so it isn't as simple as just looking up which product released on the given release date.
 
 ## Status
-Very nearly complete; Final polishing in progress.
+Complete
 
 ## How to Run
 1. **Clone the Repository**
-2. **Run ```pip install -r requirements.txt```**
+2. **Open the Repository in your IDE and Run ```pip install -r requirements.txt``` in the terminal**
 3. **Navigate to the eda_visualizations.py file in the Notebooks folder, and run any cell** (just make sure to run the imports cell before any others every time you start an environment.)
 
 All of the data was gathered on Kaggle at https://www.kaggle.com/datasets/amangarg08/apple-retail-sales-dataset. It does NOT represent real Apple Sales data.
